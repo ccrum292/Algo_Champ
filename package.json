@@ -1,0 +1,31 @@
+{
+  "name": "Algo_Champ",
+  "version": "1.0.0",
+  "main": "server.js",
+  "repository": "git@github.com:ccrum292/Algo_Champ.git",
+  "author": "ccrum292 <ccrum292@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.2.5",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "sequelize": "^6.5.0",
+    "sequelize-cli": "^6.2.0"
+  },
+  "scripts": {
+    "build": "cd client && yarn build",
+    "start": "node server.js",
+    "client:dev": "cd client && yarn start",
+    "server:dev": "nodemon",
+    "heroku-postbuild": "yarn build",
+    "start:dev": "concurrently -n client,server \"yarn run client:dev\" \"yarn run server:dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^6.0.0",
+    "nodemon": "^2.0.7"
+  }
+}
