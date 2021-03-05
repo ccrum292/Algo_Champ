@@ -1,34 +1,32 @@
-// const usersController = require('express').Router();
+const usersController = require('express').Router();
 
-// const db = require('../../models');
-// const { JWTVerifier } = require('../../lib/passport');
-// const jwt = require('jsonwebtoken');
-// const sendGrid = require('../../lib/emailSendgrid');
+const db = require('../../models');
+const { JWTVerifier } = require('../../lib/passport');
+const jwt = require('jsonwebtoken');
 
-// usersController.post('/', (req, res) => {
-// 	const { email, password } = req.body;
-// 	sendGrid('welcome', email);
-// 	db.User.create({ email, password }).then((user) => res.json(user)).catch((err) => res.json(err));
-// });
+usersController.post('/', (req, res) => {
+	const { email, password } = req.body;
+	db.User.create({ email, password }).then((user) => res.json(user)).catch((err) => res.json(err));
+});
 
-// usersController.get('/me', JWTVerifier, (req, res) => {
-// 	res.json(req.user);
-// });
+usersController.get('/me', JWTVerifier, (req, res) => {
+	res.json(req.user);
+});
 
-// usersController.post('/login', (req, res) => {
-// 	const { email, password } = req.body;
+usersController.post('/login', (req, res) => {
+	const { email, password } = req.body;
 
-// 	db.User.findOne({ where: { email } }).then((user) => {
-// 		if (!user || !user.comparePassword(password)) {
-// 			return res.status(401).send('Unauthorized');
-// 		}
+	db.User.findOne({ where: { email } }).then((user) => {
+		if (!user || !user.comparePassword(password)) {
+			return res.status(401).send('Unauthorized');
+		}
 
-// 		res.json({
-// 			token: jwt.sign({ sub: user.id }, process.env.JWT_SECRET),
-// 			user
-// 		});
-// 	});
-// });
+		res.json({
+			token: jwt.sign({ sub: user.id }, process.env.JWT_SECRET),
+			user
+		});
+	});
+});
 
 // // Sends an Email invite
 // usersController.post('/invite', (req, res) => {
@@ -103,4 +101,4 @@
 // 		.catch((err) => console.log(err));
 // });
 
-// module.exports = usersController;
+module.exports = usersController;
