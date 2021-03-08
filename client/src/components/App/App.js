@@ -9,6 +9,7 @@ import API from "../../lib/API";
 import Navigation from "../../components/Navigation";
 import Register from "../../pages/Register";
 import Login from "../../pages/Login";
+import Welcome from "../../pages/Welcome";
 
 
 function App() {
@@ -36,9 +37,7 @@ function App() {
       <Navigation></Navigation>
       <Switch>
         <Route exact path="/">
-          <div>
-            Hello World
-          </div>
+          <Welcome></Welcome>
         </Route>
         <Route exact path="/register">
           <Register></Register>
