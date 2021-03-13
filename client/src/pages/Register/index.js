@@ -36,7 +36,9 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2),
     textAlign: "center"
 
-  }
+  },
+  appBarSpacer: theme.mixins.toolbar,
+
 }));
 
 export default function Register() {
@@ -75,7 +77,7 @@ export default function Register() {
 
   return (
     <Container component="main" maxWidth="xs">
-      <CssBaseline />
+      <div className={classes.appBarSpacer}></div>
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />

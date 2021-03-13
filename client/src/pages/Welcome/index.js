@@ -28,7 +28,9 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2),
     textAlign: "center"
 
-  }
+  },
+  appBarSpacer: theme.mixins.toolbar,
+
 
 }));
 
@@ -37,7 +39,7 @@ export default function Login() {
 
   return (
     <Container component="main" maxWidth="sm">
-      <CssBaseline />
+      <div className={classes.appBarSpacer}></div>
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <CodeIcon />

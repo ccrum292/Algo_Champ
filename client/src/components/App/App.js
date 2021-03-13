@@ -1,6 +1,8 @@
 import React, {useState, useEffect, useMemo} from 'react';
 import './App.css';
 import { Switch, Route } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 import UserAndAuthContext from '../../context/AuthContext';
 import TokenStore from "../../lib/TokenStore";
@@ -12,9 +14,16 @@ import Login from "../../pages/Login";
 import Welcome from "../../pages/Welcome";
 import Dashboard from "../../pages/Dashboard";
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+  },
+}))
+
+
 
 function App(props) {
-
+  const classes = useStyles();
   const [user, setUser] = useState(null);
   const [authToken, setAuthToken] = useState(null);
 
@@ -45,18 +54,21 @@ function App(props) {
 
   return (
     <UserAndAuthContext.Provider value={value}>
-      <Navigation></Navigation>
-      <Switch>
-        <Route exact path="/">
-          {user ? <Dashboard></Dashboard> : <Welcome></Welcome>}
-        </Route>
-        <Route  exact path="/register">
-          <Register></Register>
-        </Route>
-        <Route exact path="/login">
-          <Login ></Login>
-        </Route>
-      </Switch>
+      <CssBaseline/>
+      <div className={classes.root}>
+        <Navigation></Navigation>
+        <Switch>
+          <Route exact path="/">
+            {user ? <Dashboard></Dashboard> : <Welcome></Welcome>}
+          </Route>
+          <Route  exact path="/register">
+            <Register></Register>
+          </Route>
+          <Route exact path="/login">
+            <Login ></Login>
+          </Route>
+        </Switch>
+      </div>
     </UserAndAuthContext.Provider>
   );
 }
