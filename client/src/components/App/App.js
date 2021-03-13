@@ -10,19 +10,30 @@ import Navigation from "../../components/Navigation";
 import Register from "../../pages/Register";
 import Login from "../../pages/Login";
 import Welcome from "../../pages/Welcome";
+import Dashboard from "../../pages/Dashboard";
 
 
-function App() {
+function App(props) {
 
   const [user, setUser] = useState(null);
   const [authToken, setAuthToken] = useState(null);
 
   useEffect(() => {
     const setUserOnPageLoad = async () => {
-      const userData = await API.Users.getMe(TokenStore.getToken());
-      if(!userData) return;
-      setUser(userData);
-      setAuthToken(TokenStore.getToken());
+      const userToken = TokenStore.getToken();
+      if (userToken) {
+        const userData = await API.Users.getMe(TokenStore.getToken());
+        if(!userData) return;
+        console.log(userData)
+        const userContextData = {
+          id: userData.data.id,
+          name: userData.data.name,
+          email: userData.data.email
+        }
+        setUser(userContextData);  
+        setAuthToken(TokenStore.getToken());
+      }
+
     }
 
     setUserOnPageLoad();
@@ -37,13 +48,13 @@ function App() {
       <Navigation></Navigation>
       <Switch>
         <Route exact path="/">
-          <Welcome></Welcome>
+          {user ? <Dashboard></Dashboard> : <Welcome></Welcome>}
         </Route>
-        <Route exact path="/register">
+        <Route  exact path="/register">
           <Register></Register>
         </Route>
         <Route exact path="/login">
-          <Login></Login>
+          <Login ></Login>
         </Route>
       </Switch>
     </UserAndAuthContext.Provider>

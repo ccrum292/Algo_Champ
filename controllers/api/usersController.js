@@ -5,8 +5,8 @@ const { JWTVerifier } = require('../../lib/passport');
 const jwt = require('jsonwebtoken');
 
 usersController.post('/', (req, res) => {
-	const { email, password } = req.body;
-	db.User.create({ email, password }).then((user) => res.json(user)).catch((err) => res.json(err));
+	const { name, email, password } = req.body;
+	db.User.create({ name, email, password }).then((user) => res.json(user)).catch((err) => res.json(err));
 });
 
 usersController.get('/me', JWTVerifier, (req, res) => {
@@ -17,9 +17,8 @@ usersController.post('/login', (req, res) => {
 	const { email, password } = req.body;
 
 	db.User.findOne({ where: { email } }).then((user) => {
-		if (!user || !user.comparePassword(password)) {
-			return res.status(401).send('Unauthorized');
-		}
+		if (!user) return res.status(404).send('User not Found');
+		if (user.dataValues.password !== password) return res.status(401).send('Unauthorized');
 
 		res.json({
 			token: jwt.sign({ sub: user.id }, process.env.JWT_SECRET),

@@ -3,6 +3,11 @@ import { AppBar, Button, Toolbar, IconButton, Typography } from '@material-ui/co
 import MenuIcon from '@material-ui/icons/Menu'
 import { Link } from 'react-router-dom'
 
+import UserAndAuthContext from "../../context/AuthContext";
+import { useContext } from 'react';
+
+import TokenStore from "../../lib/TokenStore";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,8 +26,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Navigation() {
-
   const classes = useStyles();
+
+  const { user, setUser, setAuthToken } = useContext(UserAndAuthContext);
+
+  const handleLogout = e => {
+    e.preventDefault();
+    TokenStore.clearToken();
+    setUser(null);
+    setAuthToken(null);
+
+  }
 
   return(
     <div className={classes.root}>
@@ -36,16 +50,20 @@ export default function Navigation() {
               Algo_Champ
             </Link>
           </Typography>
-          <Button color="inherit">
-            <Link className={classes.link} to="/login">
-              Login
-            </Link>
-          </Button>
-          <Button color="inherit">
-            <Link className={classes.link} to="/register">
-              Register
-            </Link>
-          </Button>
+          { !user ? 
+          <>
+            <Button to="/login" component={Link} color="inherit">
+                Login
+            </Button>
+            <Button to="/register" component={Link} color="inherit">
+                Register
+            </Button>
+          </>
+          : 
+            <Button onClick={e => handleLogout(e)} color="inherit">
+              Logout
+            </Button>
+          }
         </Toolbar>
       </AppBar>
 

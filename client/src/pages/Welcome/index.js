@@ -28,10 +28,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2),
     textAlign: "center"
 
-  },
-  link: {
-    color: '#fff',
-    textDecoration: 'none'
   }
 
 }));
@@ -54,17 +50,13 @@ export default function Login() {
         </Typography>
         <Grid container direction="row" justify="center" alignItems="center" spacing={2}>
           <Grid item>
-            <Button size="large"  variant="contained" color="primary">
-              <Link className={classes.link} to="/login">
-                Login
-              </Link>
+            <Button to="/login" component={Link} size="large"  variant="contained" color="primary">
+              Login
             </Button>
           </Grid>
           <Grid item>
-            <Button size="large" variant="contained" color="primary">
-              <Link className={classes.link} to="/register">
+            <Button to="/register" component={Link} size="large" variant="contained" color="primary">
                 Register
-              </Link>
             </Button>
           </Grid>
         </Grid>

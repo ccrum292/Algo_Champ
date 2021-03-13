@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Redirect, useHistory } from 'react-router-dom';
+
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+
+import API from '../../lib/API';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -30,10 +32,46 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  subHeading: {
+    margin: theme.spacing(2),
+    textAlign: "center"
+
+  }
 }));
 
 export default function Register() {
   const classes = useStyles();
+  const history = useHistory();
+
+  const [redirect, setRedirect] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [secondPassword, setSecondPassword] = useState("");
+  const [userMessage, setUserMessage] = useState("");
+
+  const handleSubmit = async e => {
+    e.preventDefault()
+    if (password !== secondPassword) {
+      return setUserMessage(`Passwords must match.`);
+    }
+    setUserMessage("");
+
+    let name = `${firstName.trim()} ${lastName.trim()}`;
+    const res = await API.Users.create(name, email, password);
+
+    if(res.data.errors){
+      setUserMessage("An account has already been created with the following email address: " + email);
+      return
+    }
+
+    setRedirect(true);
+
+    
+    return
+  }
+
 
   return (
     <Container component="main" maxWidth="xs">
@@ -45,10 +83,14 @@ export default function Register() {
         <Typography component="h1" variant="h5">
           Register
         </Typography>
-        <form className={classes.form} noValidate>
+        <Typography color="secondary" className={classes.subHeading} variant="h6">
+          {userMessage}
+        </Typography>
+        <form onSubmit={e => handleSubmit(e)} className={classes.form} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <TextField
+              <TextField 
+                onChange={e => setFirstName(e.target.value)}
                 autoComplete="fname"
                 name="firstName"
                 variant="outlined"
@@ -61,6 +103,7 @@ export default function Register() {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
+                onChange={e => setLastName(e.target.value)}
                 variant="outlined"
                 required
                 fullWidth
@@ -72,6 +115,7 @@ export default function Register() {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                onChange={e => setEmail(e.target.value)}
                 variant="outlined"
                 required
                 fullWidth
@@ -83,6 +127,7 @@ export default function Register() {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                onChange={e => setPassword(e.target.value)}
                 variant="outlined"
                 required
                 fullWidth
@@ -95,13 +140,14 @@ export default function Register() {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                onChange={e => setSecondPassword(e.target.value)}
                 variant="outlined"
                 required
                 fullWidth
                 name="re-enter-password"
                 label="Re-enter Password"
                 type="password"
-                id="password"
+                id="re-enter-password"
                 autoComplete="current-password"
               />
             </Grid>
@@ -124,6 +170,10 @@ export default function Register() {
           </Grid>
         </form>
       </div>
+      {redirect ? <Redirect to={{
+        pathname: "/login",
+        state: { registration: true }
+      }} /> : null}
     </Container>
   );
 }

@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { useLocation, Redirect } from 'react-router-dom';
+
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -9,6 +11,11 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+
+import API from '../../lib/API';
+import UserAndAuthContext from "../../context/AuthContext";
+import TokenStore from "../../lib/TokenStore";
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -28,10 +35,63 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  subHeading: {
+    margin: theme.spacing(2),
+    textAlign: "center"
+
+  }
 }));
 
 export default function Login() {
   const classes = useStyles();
+  const location = useLocation();
+
+  const { setUser, setAuthToken } = useContext(UserAndAuthContext);
+
+  const [loginMessage, setLoginMessage] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [redirect, setRedirect] = useState(false);
+
+  
+  useEffect(() => {
+    if (location.state !== undefined && location.state.registration) {
+      setLoginMessage("Registration was Successful, Please Login")
+    }
+
+  }, []);
+
+
+  const handleSubmit = async e => {
+    console.log("submit")
+    e.preventDefault()
+
+    if (email.length === 0 || password.length === 0) {
+      return
+    }
+
+    try {
+      const res = await API.Users.login(email, password);
+  
+      console.log(res);
+      TokenStore.setToken(res.data.token);
+      setAuthToken(res.data.token);
+      const user = {
+        id: res.data.user.id,
+        name: res.data.user.name,
+        email: res.data.user.email
+      }
+      setUser(user);
+      setRedirect(true);
+
+    } catch (e) {
+      console.log(e);
+    }
+
+
+
+  }
+  
 
   return (
     <Container component="main" maxWidth="xs">
@@ -43,8 +103,12 @@ export default function Login() {
         <Typography component="h1" variant="h5">
           Login
         </Typography>
-        <form className={classes.form} noValidate>
+        <Typography color="secondary" className={classes.subHeading} variant="h6">
+          {loginMessage}
+        </Typography>
+        <form onSubmit={e => handleSubmit(e)} className={classes.form} noValidate>
           <TextField
+            onChange={e => setEmail(e.target.value)}
             variant="outlined"
             margin="normal"
             required
@@ -56,6 +120,7 @@ export default function Login() {
             autoFocus
           />
           <TextField
+            onChange={e => setPassword(e.target.value)}
             variant="outlined"
             margin="normal"
             required
@@ -93,6 +158,9 @@ export default function Login() {
           </Grid>
         </form>
       </div>
+      {redirect ? <Redirect to={{
+        pathname: "/"
+      }} /> : null}
     </Container>
   );
 }
