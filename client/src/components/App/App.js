@@ -14,7 +14,7 @@ import Login from "../../pages/Login";
 import Welcome from "../../pages/Welcome";
 import Dashboard from "../../pages/Dashboard";
 import Leaderboard from "../../pages/LeaderBoard";
-import CircularProgressBar from "../CircularProgressBar";
+import Algo from "../../pages/Algo";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -36,7 +36,6 @@ function App(props) {
       if (userToken) {
         const userData = await API.Users.getMe(TokenStore.getToken());
         if(!userData) return;
-        console.log(userData)
         const userContextData = {
           id: userData.data.id,
           name: userData.data.name,
@@ -72,6 +71,9 @@ function App(props) {
           </Route>
           <Route exact path="/leaderboard">
             {user ? <Leaderboard></Leaderboard> : <Login></Login>}
+          </Route>
+          <Route path="/algo/:id">
+            {user ? <Algo></Algo> : <Login></Login>}
           </Route>
           <Route>
             <Redirect to={{
