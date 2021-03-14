@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useMemo} from 'react';
 import './App.css';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
@@ -13,6 +13,9 @@ import Register from "../../pages/Register";
 import Login from "../../pages/Login";
 import Welcome from "../../pages/Welcome";
 import Dashboard from "../../pages/Dashboard";
+import Leaderboard from "../../pages/LeaderBoard";
+import CircularProgressBar from "../CircularProgressBar";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -66,6 +69,14 @@ function App(props) {
           </Route>
           <Route exact path="/login">
             <Login ></Login>
+          </Route>
+          <Route exact path="/leaderboard">
+            {user ? <Leaderboard></Leaderboard> : <Login></Login>}
+          </Route>
+          <Route>
+            <Redirect to={{
+              pathname: "/"
+            }} />
           </Route>
         </Switch>
       </div>

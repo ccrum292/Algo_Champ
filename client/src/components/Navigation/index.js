@@ -1,16 +1,19 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Button, Toolbar, IconButton, Typography, Divider, Drawer } from '@material-ui/core';
+import { AppBar, Button, Toolbar, IconButton, Typography, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import BarChartIcon from '@material-ui/icons/BarChart';
+
 import clsx from 'clsx';
 
 
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import UserAndAuthContext from "../../context/AuthContext";
 import { useContext, useState } from 'react';
 
 import TokenStore from "../../lib/TokenStore";
-// import { mainListItems, secondaryListItems } from '';
 
 const drawerWidth = 240;
 
@@ -54,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
+    height: "100vh",
   },
   drawerPaperClose: {
     overflowX: 'hidden',
@@ -83,13 +87,13 @@ export default function Navigation() {
 
   const { user, setUser, setAuthToken } = useContext(UserAndAuthContext);
   const [navOpen, setNavOpen] = useState(false);
-
+  const [redirect, setRedirect] = useState(false);
   const handleLogout = e => {
     e.preventDefault();
     TokenStore.clearToken();
     setUser(null);
     setAuthToken(null);
-
+    setRedirect(true);
   }
 
   return(
@@ -132,12 +136,40 @@ export default function Navigation() {
             <ChevronLeftIcon />
           </IconButton>
         </div>
-        <Divider />
-        {/* <List>{mainListItems}</List> */}
-        <Divider />
-        {/* <List>{secondaryListItems}</List> */}
+        {
+          user ? 
+          <>
+            <Divider />
+            <List>
+              <ListItem button to="/" component={Link}>
+                <ListItemIcon>
+                  <DashboardIcon />
+                </ListItemIcon>
+                <ListItemText primary="Dashboard" />
+              </ListItem>
+              <ListItem button to="/leaderboard" component={Link}>
+                <ListItemIcon>
+                  <BarChartIcon />
+                </ListItemIcon>
+                <ListItemText primary="Leader Board" />
+              </ListItem>
+            </List>
+            <Divider />
+            <List>
+            <ListItem button onClick={e => handleLogout(e)}>
+              <ListItemIcon>
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+              </ListItem>
+            </List>
+          </>
+          : null
+        }
       </Drawer>
-
+      {redirect ? <Redirect to={{
+        pathname: "/"
+      }} /> : null}
     </div>
   );
 }
