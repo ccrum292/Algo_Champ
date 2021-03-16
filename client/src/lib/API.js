@@ -17,7 +17,13 @@ export default {
         },
       });
     }
-  }
+  },
+
+
+
+
+
+
   //   inviteFriend: function (email) {
   //     return axios.post("/api/users/invite",{ email: email })
   //   },
