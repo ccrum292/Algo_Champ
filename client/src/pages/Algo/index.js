@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import clsx from 'clsx';
 import "./style.css";
+import API from "../../lib/API";
 
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button'
 
 import {UnControlled as CodeMirror} from 'react-codemirror2';
+import UserAndAuthContext from '../../context/AuthContext';
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
 require('codemirror/mode/javascript/javascript.js');
@@ -58,7 +61,7 @@ export default function Algo(props) {
   const tableDivPaper = clsx(classes.paper, classes.tableDiv, classes.secondSmallPaper);
 
   let params = useParams();
-  console.log("params",params);
+  // console.log("params",params);
 
   let options = {
     mode: 'javascript',
@@ -69,8 +72,15 @@ export default function Algo(props) {
   let value = '// Hello World';
 
   const [codeMirrorValue, setCodeMirrorValue] = useState(value);
+  const { user } = useContext(UserAndAuthContext);
 
-  console.log(codeMirrorValue);
+  const handleSubmit = async e => {
+    e.preventDefault();
+
+    const data = await API.Answers.addAnswer(codeMirrorValue, user.id, 1);
+    console.log(data);
+
+  }
 
   
   
@@ -90,7 +100,7 @@ export default function Algo(props) {
                 />
               </Paper>
               <Paper className={tableDivPaper}>
-                Console 
+                <Button size="large" variant="contained" color="primary" onClick={e => handleSubmit(e)}>Submit</Button>
               </Paper>
             </Grid>
             <Grid item xs={12} md={5} lg={4}>

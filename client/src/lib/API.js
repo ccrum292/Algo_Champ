@@ -19,6 +19,25 @@ export default {
     }
   },
 
+  Answers: {
+    addAnswer: function(codeMirrorValue, userId, problemId) {
+      return axios.post("/api/answers", {
+        codeText: codeMirrorValue,
+        UserId: userId,
+        ProblemId: problemId
+      })
+    }
+  },
+
+  Classes: {
+    getUserClasses: function(authToken) {
+      return axios.get("/api/classes", {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      });
+    }
+  }
 
 
 

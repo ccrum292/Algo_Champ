@@ -29,6 +29,7 @@ function App(props) {
   const classes = useStyles();
   const [user, setUser] = useState(null);
   const [authToken, setAuthToken] = useState(null);
+  const [currentClass, setCurrentClass] = useState(null);
 
   useEffect(() => {
     const setUserOnPageLoad = async () => {
@@ -51,7 +52,7 @@ function App(props) {
   }, []);
 
   const value = useMemo(() => ({
-    user, setUser, authToken, setAuthToken
+    user, setUser, authToken, setAuthToken, currentClass, setCurrentClass
   }), [user, setUser, authToken, setAuthToken]);
 
   return (

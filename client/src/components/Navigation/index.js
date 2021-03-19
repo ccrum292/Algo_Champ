@@ -5,6 +5,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import BarChartIcon from '@material-ui/icons/BarChart';
+import UserClass from '../../components/UserClass';
 
 import clsx from 'clsx';
 
@@ -118,9 +119,7 @@ export default function Navigation() {
             </Button>
           </>
           : 
-            <Button onClick={e => handleLogout(e)} color="inherit">
-              Logout
-            </Button>
+            <UserClass ></UserClass>
           }
         </Toolbar>
       </AppBar>

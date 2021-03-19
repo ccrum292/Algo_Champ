@@ -1,8 +1,14 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const ClassUser = sequelize.define('ClassUser', {
-    admin: DataTypes.BOOLEAN,
-    score: DataTypes.INTEGER
+    admin: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    score: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    }
   }, {});
   ClassUser.associate = function(models) {
     // associations can be defined here
