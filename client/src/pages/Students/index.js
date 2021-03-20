@@ -7,6 +7,15 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import ClearIcon from '@material-ui/icons/Clear';
+import IconButton from '@material-ui/core/IconButton';
+
+
 
 
 const drawerWidth = 240;
@@ -35,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
   },
   secondSmallPaper: {
     marginTop: theme.spacing(2),
+  },
+  mb1: {
+    marginBottom: theme.spacing(1)
   }
 }));
 
@@ -53,6 +65,21 @@ export default function Students() {
             </Grid>
             <Grid item container justify="space-between"  direction="column" xs={12} md={4} lg={3}>
                 <Paper className={fixedHeightPaper}>
+                  <Typography className={classes.mb1} component="h1" variant="h5">
+                    Join Requests
+                  </Typography>
+                  <Divider />
+                  <List>
+                    <ListItem >
+                      <ListItemText primary="Caleb Crum" />
+                      <IconButton>
+                        <AddCircleOutlineIcon />
+                      </IconButton>
+                      <IconButton>
+                        <ClearIcon />
+                      </IconButton>
+                    </ListItem>
+                  </List>
                 </Paper>
             </Grid>
           </Grid>
