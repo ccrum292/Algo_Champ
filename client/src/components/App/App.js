@@ -15,6 +15,7 @@ import Welcome from "../../pages/Welcome";
 import Dashboard from "../../pages/Dashboard";
 import Leaderboard from "../../pages/LeaderBoard";
 import Algo from "../../pages/Algo";
+import Students from "../../pages/Students";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -53,7 +54,7 @@ function App(props) {
 
   const value = useMemo(() => ({
     user, setUser, authToken, setAuthToken, currentClass, setCurrentClass
-  }), [user, setUser, authToken, setAuthToken]);
+  }), [user, setUser, authToken, setAuthToken, currentClass, setCurrentClass]);
 
   return (
     <UserAndAuthContext.Provider value={value}>
@@ -72,6 +73,12 @@ function App(props) {
           </Route>
           <Route exact path="/leaderboard">
             {user ? <Leaderboard></Leaderboard> : <Login></Login>}
+          </Route>
+          <Route exact path="/students">
+            {!currentClass ? <Login></Login> : currentClass.ClassUser.admin ? <Students></Students> : <Login></Login>}
+          </Route>
+          <Route exact path="/algorithms">
+            {!currentClass ? <Login></Login> : currentClass.ClassUser.admin ? <Students></Students> : <Login></Login>}
           </Route>
           <Route path="/algo/:id">
             {user ? <Algo></Algo> : <Login></Login>}

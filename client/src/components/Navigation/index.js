@@ -5,6 +5,8 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import BarChartIcon from '@material-ui/icons/BarChart';
+import PeopleIcon from '@material-ui/icons/People';
+import CodeIcon from '@material-ui/icons/Code';
 import UserClass from '../../components/UserClass';
 
 import clsx from 'clsx';
@@ -86,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Navigation() {
   const classes = useStyles();
 
-  const { user, setUser, setAuthToken } = useContext(UserAndAuthContext);
+  const { user, setUser, setAuthToken, currentClass } = useContext(UserAndAuthContext);
   const [navOpen, setNavOpen] = useState(false);
   const [redirect, setRedirect] = useState(false);
   const handleLogout = e => {
@@ -152,6 +154,23 @@ export default function Navigation() {
                 </ListItemIcon>
                 <ListItemText primary="Leader Board" />
               </ListItem>
+              {!currentClass ? null : currentClass.ClassUser.admin ? 
+              <>
+              <ListItem button to="/students" component={Link}>
+                <ListItemIcon>
+                  <PeopleIcon />
+                </ListItemIcon>
+                <ListItemText primary="Students" />
+              </ListItem>
+              <ListItem button to="/algorithms" component={Link}>
+                <ListItemIcon>
+                  <CodeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Algorithms" />
+              </ListItem>
+              </> :
+              null
+            }
             </List>
             <Divider />
             <List>

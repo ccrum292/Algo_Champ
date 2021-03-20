@@ -1,18 +1,25 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Answers', {
+    return queryInterface.createTable('joinRequests', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      codeText: {
+      ClassId: {
+        type: Sequelize.INTEGER
+      },
+      UserId: {
+        type: Sequelize.INTEGER
+      },
+      userEmail: {
         type: Sequelize.STRING
       },
-      correctAnswer: {
-        type: Sequelize.BOOLEAN
+      pending: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: true,
       },
       createdAt: {
         allowNull: false,
@@ -21,18 +28,10 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      },
-      UserId: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      },
-      ProblemId: {
-        type: Sequelize.INTEGER,
-        allowNull: false
       }
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Answers');
+    return queryInterface.dropTable('joinRequests');
   }
 };

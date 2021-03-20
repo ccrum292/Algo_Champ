@@ -79,13 +79,17 @@ export default function UserClass() {
 
   const menuItemClick = e => {
     handleClose();
-    const newClassId = e.currentTarget.id;
+    const newClassId = parseInt(e.currentTarget.id);
     const newClassName = e.currentTarget.textContent
 
     setClassId(newClassId);
     setClassName(newClassName);
 
-    const newCurrentClass = allClasses.filter(val => val.id === newClassId);
+    const newCurrentClass = allClasses.filter(val => {
+      console.log(val.id, newClassId)
+      return val.id === newClassId
+    });
+    console.log("newCurrentClass", newCurrentClass)
     setCurrentClass(newCurrentClass[0]);
     setCurrentClassLocalState(newCurrentClass[0]);
   }

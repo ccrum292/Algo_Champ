@@ -32,6 +32,20 @@ module.exports = {
           name: "test4",
           createdAt: new Date(),
           updatedAt: new Date(),
+        },
+        {
+          email: "ccrum292@gmail.com",
+          password: "test",
+          name: "cc",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          email: "test5@test.com",
+          password: "test",
+          name: "test5",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         }
       ],
       {}

@@ -12,6 +12,17 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: true
       },
+      airDate: {
+        type: Sequelize.DATE
+      },
+      airDateBonusModifier: {
+        type: Sequelize.INTEGER,
+        defaultValue: 2
+      },
+      airDateBonusLength: {
+        type: Sequelize.INTEGER,
+        defaultValue: 45
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

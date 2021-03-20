@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
     Class.belongsToMany(models.Problem, {
       through: models.ClassProblem
     });
+    Class.hasMany(models.joinRequest, {
+      onDelete: "cascade"
+    })
   };
   return Class;
 };
