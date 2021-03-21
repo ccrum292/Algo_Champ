@@ -45,21 +45,30 @@ export default function UserClass() {
   const [className, setClassName] = useState(null);
   const [allClasses, setAllClasses] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [currentClassLocalState, setCurrentClassLocalState] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [classRequestInputVal, setClassRequestInputVal] = useState(null);
   const [submitMessage, setSubmitMessage] = useState("");
-  const { currentClass, setCurrentClass } = useContext(UserAndAuthContext);
+  const { authToken, currentClass, setCurrentClass } = useContext(UserAndAuthContext);
 
   const userClasses = async (authToken) => {
     const res = await API.Classes.getUserClasses(authToken);
     if(!res.data[0]) return
-    setClassId(res.data[0].id);
-    setClassName(res.data[0].name);
-    setCurrentClass(res.data[0]);
-    setCurrentClassLocalState(res.data[0])
-    setAllClasses(res.data);
+    const lastClassId = parseInt(UserStore.getClassId());
+    const newCurrentClass = res.data.filter(val => {
+      return val.id === lastClassId
+    });
 
+    if (newCurrentClass[0]){
+      setClassId(newCurrentClass[0].id);
+      setClassName(newCurrentClass[0].name);
+      setCurrentClass(newCurrentClass[0]);
+    } else {
+      setClassId(res.data[0].id);
+      setClassName(res.data[0].name);
+      setCurrentClass(res.data[0]);
+      UserStore.setClassId(res.data[0].id)
+    }
+    setAllClasses(res.data);
   }
 
   useEffect(() => {
@@ -83,15 +92,13 @@ export default function UserClass() {
     const newClassName = e.currentTarget.textContent
 
     setClassId(newClassId);
+    UserStore.setClassId(newClassId);
     setClassName(newClassName);
 
     const newCurrentClass = allClasses.filter(val => {
-      console.log(val.id, newClassId)
       return val.id === newClassId
     });
-    console.log("newCurrentClass", newCurrentClass)
     setCurrentClass(newCurrentClass[0]);
-    setCurrentClassLocalState(newCurrentClass[0]);
   }
   
   const addClassClick = () => {
@@ -99,9 +106,11 @@ export default function UserClass() {
     setModalOpen(true);
   }
 
-  const handleClassRequestSubmit = e => {
+  const handleClassRequestSubmit = async e => {
     e.preventDefault();
-    console.log(classRequestInputVal);
+    const data = await API.JoinRequests.userRequestJoin(authToken, classRequestInputVal)
+    console.log(data);
+
     setSubmitMessage("Your Request Has Been Sent!")
     setTimeout(() => {
       setModalOpen(false);

@@ -17,6 +17,7 @@ import UserAndAuthContext from "../../context/AuthContext";
 import { useContext, useState } from 'react';
 
 import TokenStore from "../../lib/TokenStore";
+import UserStore from "../../lib/UserStore";
 
 const drawerWidth = 240;
 
@@ -94,6 +95,7 @@ export default function Navigation() {
   const handleLogout = e => {
     e.preventDefault();
     TokenStore.clearToken();
+    UserStore.clearClassId();
     setUser(null);
     setAuthToken(null);
     setRedirect(true);

@@ -36,8 +36,58 @@ export default {
           Authorization: `Bearer ${authToken}`,
         }
       });
+    },
+
+    adminGetJoinRequests: function(authToken) {
+      return axios.get("/api/classes", {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      });
     }
-  }
+  },
+
+  JoinRequests: {
+    userRequestJoin: function(authToken, nameOfClass) {
+      return axios.post("/api/joinrequests",{
+        name: nameOfClass
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      });
+    },
+
+    getJoinRequestsForAdmin: function(authToken, classId) {
+      return axios.get("/api/joinrequests/" + classId, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      });
+    },
+
+    adminAcceptJoinRequest: function(authToken, classId, studentUserId, joinRequestId) {
+      return axios.post("/api/joinrequests/accept/" + classId, {
+        studentUserId: studentUserId,
+        joinRequestId: joinRequestId
+      }, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      });
+    },
+
+    adminDeclineJoinRequest: function(authToken, classId, joinRequestId) {
+      return axios.post("/api/joinrequests/decline/" + classId, {
+        joinRequestId: joinRequestId
+      }, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      });
+    }
+  } 
 
 
 

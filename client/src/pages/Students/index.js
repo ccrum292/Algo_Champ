@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect, useContext} from 'react';
 import clsx from 'clsx';
+import API from '../../lib/API';
+import UserAndAuthContext from '../../context/AuthContext';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -52,9 +54,34 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Students() {
   const classes = useStyles();
-
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const tableDivPaper = clsx(classes.paper, classes.tableDiv);
+
+  const { currentClass, authToken } = useContext(UserAndAuthContext);
+  const [joinRequests, setJoinRequests] = useState(null);
+
+  const getData = async () => {
+    const joinRequestsData = await API.JoinRequests.getJoinRequestsForAdmin(authToken, currentClass.id)
+    setJoinRequests(joinRequestsData.data);
+  }
+
+
+  useEffect(() => {
+    getData()
+  }, []);
+
+  const handleAccept = async e => {
+    e.currentTarget.parentElement.remove();
+    const res = await API.JoinRequests.adminAcceptJoinRequest(authToken, e.currentTarget.dataset.classid, e.currentTarget.dataset.studentuserid, e.currentTarget.dataset.joinrequestid);
+    console.log(res);
+  }
+
+  const handleDecline = async e => {
+    e.currentTarget.parentElement.remove();
+    const res = await API.JoinRequests.adminDeclineJoinRequest(authToken, e.currentTarget.dataset.classid, e.currentTarget.dataset.joinrequestid);
+    console.log(res);
+  }
+
   return (
         <Container component="main" maxWidth="lg" className={classes.container}>
           <div className={classes.appBarSpacer}></div>
@@ -70,15 +97,23 @@ export default function Students() {
                   </Typography>
                   <Divider />
                   <List>
-                    <ListItem >
-                      <ListItemText primary="Caleb Crum" />
-                      <IconButton>
-                        <AddCircleOutlineIcon />
-                      </IconButton>
-                      <IconButton>
-                        <ClearIcon />
-                      </IconButton>
-                    </ListItem>
+                    { joinRequests ? 
+                      joinRequests.map(val => {
+                        console.log(val);
+                        return (
+                          <ListItem key={val.id}>
+                            <ListItemText primary={val.userEmail} />
+                            <IconButton id="hello" onClick={handleAccept} data-classid={val.ClassId} data-joinrequestid={val.id} data-studentuserid={val.UserId}>
+                              <AddCircleOutlineIcon />
+                            </IconButton>
+                            <IconButton onClick={handleDecline} data-classid={val.ClassId} data-joinrequestid={val.id}>
+                              <ClearIcon />
+                            </IconButton>
+                          </ListItem>
+  
+                        )
+                      }) : null
+                    }
                   </List>
                 </Paper>
             </Grid>

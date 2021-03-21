@@ -65,7 +65,6 @@ export default function Login() {
 
 
   const handleSubmit = async e => {
-    console.log("submit")
     e.preventDefault()
 
     if (email.length === 0 || password.length === 0) {
@@ -75,7 +74,6 @@ export default function Login() {
     try {
       const res = await API.Users.login(email, password);
   
-      console.log(res);
       TokenStore.setToken(res.data.token);
       setAuthToken(res.data.token);
       const user = {
