@@ -164,7 +164,7 @@ export default function Navigation() {
                 </ListItemIcon>
                 <ListItemText primary="Students" />
               </ListItem>
-              <ListItem button to="/algorithms" component={Link}>
+              <ListItem button to="/adminalgo" component={Link}>
                 <ListItemIcon>
                   <CodeIcon />
                 </ListItemIcon>

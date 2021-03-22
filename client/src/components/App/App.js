@@ -16,6 +16,7 @@ import Dashboard from "../../pages/Dashboard";
 import Leaderboard from "../../pages/LeaderBoard";
 import Algo from "../../pages/Algo";
 import Students from "../../pages/Students";
+import AdminAlgo from "../../pages/AdminAlgo";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -77,8 +78,8 @@ function App(props) {
           <Route exact path="/students">
             {!currentClass ? <Login></Login> : currentClass.ClassUser.admin ? <Students></Students> : <Login></Login>}
           </Route>
-          <Route exact path="/algorithms">
-            {!currentClass ? <Login></Login> : currentClass.ClassUser.admin ? <Students></Students> : <Login></Login>}
+          <Route exact path="/adminalgo">
+            {!currentClass ? <Login></Login> : currentClass.ClassUser.admin ? <AdminAlgo></AdminAlgo> : <Login></Login>}
           </Route>
           <Route path="/algo/:id">
             {user ? <Algo></Algo> : <Login></Login>}

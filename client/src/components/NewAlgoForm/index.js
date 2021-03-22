@@ -1,0 +1,320 @@
+import React, { useContext, useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import { MenuItem } from '@material-ui/core';
+import StarIcon from '@material-ui/icons/Star';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
+
+import {UnControlled as CodeMirror} from 'react-codemirror2';
+require('codemirror/lib/codemirror.css');
+require('codemirror/theme/material.css');
+require('codemirror/mode/javascript/javascript.js');
+
+
+const useStyles = makeStyles((theme) => ({
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(3),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+  formControl: {
+    minWidth: "100%"
+  },
+  formSmall: {
+    minWidth: 120
+  },
+  menuItem: {
+    padding: 0
+  },
+  fullCodeMirror: {
+    height: "100%"
+  }
+}));
+
+
+export default function NewAlgoForm (props) {
+  const classes = useStyles();
+
+  let options = {
+    mode: 'javascript',
+    theme: 'material',
+    lineNumbers: true,
+  }
+
+  const [title, setTitle] = useState(null);
+  const [difficulty, setDifficulty] = useState(undefined);
+  const [airDate, setAirDate] = useState(undefined);
+  const [airDateBonusModifier, setAirDateBonusModifier] = useState(2);
+  const [bonusDuration, setBonusDuration] = useState(45);
+  const [directions, setDirections] = useState("");
+  const [codeMirrorValue, setCodeMirrorValue] = useState(null);
+  const [example, setExample] = useState(null);
+  const [inputAndOutputArr, setInputAndOutputArr] = useState([]);
+  const [input, setInput] = useState(null);
+  const [inputType, setInputType] = useState(null);
+  const [output, setOutput] = useState(null);
+  const [outputType, setOutputType] = useState(null);
+
+
+  const handleNewAlgorithmFormSubmit = e => {
+    e.preventDefault();
+    console.log("submit")
+  };
+
+  const handleDifficultyChange = e => {
+    console.log(e.target.value);
+    setDifficulty(e.target.value);
+  }
+
+  const handleInputOutputField = () => {
+
+
+  };
+
+  return(
+    <form onSubmit={e => handleNewAlgorithmFormSubmit(e)} className={classes.form} noValidate>
+      <Grid container spacing={2}>
+        <Grid item xs={6} sm={3}>
+          <TextField 
+            onChange={e => setTitle(e.target.value)}
+            name="createTitle"
+            variant="outlined"
+            required
+            fullWidth
+            id="createTitle"
+            label="Algo Title"
+            autoFocus
+          />
+        </Grid>
+        <Grid item xs={6} sm={2}>
+          <FormControl required variant="outlined" className={classes.formControl}>
+            <InputLabel id="difficultyInput">Difficulty</InputLabel>
+            <Select
+              labelId="difficultyInput"
+              id="difficultyOutline"
+              value={difficulty}
+              onChange={handleDifficultyChange}
+              label="Difficulty"
+            >
+              <MenuItem value={1}>
+                <StarIcon />
+                <StarBorderIcon />
+                <StarBorderIcon />
+                <StarBorderIcon />
+                <StarBorderIcon />
+              </MenuItem>
+              <MenuItem value={2}>
+                <StarIcon />
+                <StarIcon />
+                <StarBorderIcon />
+                <StarBorderIcon />
+                <StarBorderIcon />
+              </MenuItem>
+              <MenuItem value={3}>
+                <StarIcon />
+                <StarIcon />
+                <StarIcon />
+                <StarBorderIcon />
+                <StarBorderIcon />
+              </MenuItem>
+              <MenuItem value={4}>
+                <StarIcon />
+                <StarIcon />
+                <StarIcon />
+                <StarIcon />
+                <StarBorderIcon />
+              </MenuItem>
+              <MenuItem value={5}>
+                <StarIcon />
+                <StarIcon />
+                <StarIcon />
+                <StarIcon />
+                <StarIcon />
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <TextField
+            required
+            id="datetime-local"
+            label="Air Date"
+            type="datetime-local"
+            variant="outlined"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            onChange={e => {
+              console.log(e.target.value);
+              setAirDate(e.target.value)
+            }}
+          />
+        </Grid>
+        <Grid item xs={6} sm={2}>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel id="airDateModifier">Air Date Bonus</InputLabel>
+            <Select
+              labelId="airDateModifier"
+              id="airDateModifierBonus"
+              value={difficulty}
+              onChange={e => setAirDateBonusModifier(e.target.value)}
+              label="Difficulty"
+            >
+              <MenuItem value={1}>None</MenuItem>
+              <MenuItem value={1}>1</MenuItem>
+              <MenuItem value={2}>2</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={4}>4</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={6} sm={2}>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel id="bonusDuration">Bonus Duration</InputLabel>
+            <Select
+              labelId="bunusDuration"
+              id="bonusDurationInMinutes"
+              value={difficulty}
+              onChange={e => setBonusDuration(e.target.value)}
+              label="Difficulty"
+            >
+              <MenuItem value={0}>None</MenuItem>
+              <MenuItem value={5}>5 minutes</MenuItem>
+              <MenuItem value={10}>10 minutes</MenuItem>
+              <MenuItem value={15}>15 minutes</MenuItem>
+              <MenuItem value={20}>20 minutes</MenuItem>
+              <MenuItem value={25}>25 minutes</MenuItem>
+              <MenuItem value={30}>30 minutes</MenuItem>
+              <MenuItem value={45}>45 minutes</MenuItem>
+              <MenuItem value={60}>1 hour</MenuItem>
+              <MenuItem value={120}>2 hours</MenuItem>
+              <MenuItem value={180}>3 hours</MenuItem>
+              <MenuItem value={1440}>1 day</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            onChange={e => setDirections(e.target.value)}
+            variant="outlined"
+            required
+            fullWidth
+            id="directions"
+            label="Directions"
+            name="directions"
+            multiline={true}
+            rows={5}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <CodeMirror
+            className={classes.fullCodeMirror}
+            value={"// Your Starter Code Here"}
+            options={options}
+            onChange={(editor, data, value) => {
+              setCodeMirrorValue(value);
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+              onChange={e => setExample(e.target.value)}
+              variant="outlined"
+              required
+              fullWidth
+              id="exampleInputAndOutput"
+              label="Displayed Example Input and Output"
+              name="exampleInputAndOutput"
+              multiline={true}
+              rows={3}
+            />
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <TextField 
+            onChange={e => setTitle(e.target.value)}
+            name="createTitle"
+            variant="outlined"
+            required
+            fullWidth
+            id="createTitle"
+            label="Algo Title"
+            autoFocus
+          />
+        </Grid>
+        <Grid item xs={6} sm={2}>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel id="airDateModifier">Air Date Bonus</InputLabel>
+            <Select
+              labelId="airDateModifier"
+              id="airDateModifierBonus"
+              value={difficulty}
+              onChange={e => setAirDateBonusModifier(e.target.value)}
+              label="Difficulty"
+            >
+              <MenuItem value={1}>None</MenuItem>
+              <MenuItem value={1}>1</MenuItem>
+              <MenuItem value={2}>2</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={4}>4</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <TextField 
+            onChange={e => setTitle(e.target.value)}
+            name="createTitle"
+            variant="outlined"
+            required
+            fullWidth
+            id="createTitle"
+            label="Algo Title"
+            autoFocus
+          />
+        </Grid>
+        <Grid item xs={6} sm={2}>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel id="airDateModifier">Air Date Bonus</InputLabel>
+            <Select
+              labelId="airDateModifier"
+              id="airDateModifierBonus"
+              value={difficulty}
+              onChange={e => setAirDateBonusModifier(e.target.value)}
+              label="Difficulty"
+            >
+              <MenuItem value={"sting"}>string</MenuItem>
+              <MenuItem value={"number"}>number</MenuItem>
+              <MenuItem value={""}></MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={4}>4</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+
+      </Grid>
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+      >
+        Create
+      </Button>
+      <Grid container justify="flex-end">
+        <Grid item>
+        </Grid>
+      </Grid>
+    </form>
+  )
+}
