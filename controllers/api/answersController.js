@@ -4,9 +4,20 @@ const db = require('../../models');
 const { JWTVerifier } = require('../../lib/passport');
 const jwt = require('jsonwebtoken');
 
+const uneval = require('uneval');
+const stringToFunc = require("../../lib/convertFunction");
+
 answersController.post('/', async (req, res) => {
   try {
     const { codeText, UserId, ProblemId } = req.body;
+
+    const fn = stringToFunc(codeText);
+
+    console.log("fn", uneval(fn));
+
+    // fn();
+
+
     const data = await db.Answer.create({ codeText, UserId, ProblemId });
     res.json(data);
 
