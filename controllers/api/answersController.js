@@ -5,21 +5,27 @@ const { JWTVerifier } = require('../../lib/passport');
 const jwt = require('jsonwebtoken');
 
 const uneval = require('uneval');
-const stringToFunc = require("../../lib/convertFunction");
+const evaluateFunc = require("../../lib/convertFunction");
 
 answersController.post('/', async (req, res) => {
   try {
     const { codeText, UserId, ProblemId } = req.body;
-
-    const fn = stringToFunc(codeText);
-
-    console.log("fn", uneval(fn));
-
-    // fn();
-
-
     const data = await db.Answer.create({ codeText, UserId, ProblemId });
-    res.json(data);
+
+    const problemData = await db.Problem.findByPk(ProblemId);
+
+    const testsData = await problemData.getTests();
+
+    const inputOutput = testsData.map(test => {
+      return {
+        input: [test.input],
+        output: test.output
+      }
+    })
+    
+    const eval = evaluateFunc(codeText, inputOutput);
+
+    res.json(eval);
 
   } catch (err) {
     console.log(err);

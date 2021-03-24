@@ -38,17 +38,14 @@ problemsController.post('/', JWTVerifier, async (req, res) => {
         ProblemId: problemCreationData.id
       }
     });
-
-    const exampleCreationData = await db.Example.bulkCreate(newDisplayValueArr);
-
+    
     const newTestDataArr = testDataArr.map(val => {
       return { ...val, 
         ProblemId: problemCreationData.id
       }
     });
 
-    const testsCreationData = await db.Test.bulkCreate(newTestDataArr)
-
+    let [exampleCreationData, testsCreationData] = await Promise.all([db.Example.bulkCreate(newDisplayValueArr), db.Test.bulkCreate(newTestDataArr)]);
 
     res.json([classProblemData, problemCreationData, exampleCreationData, testsCreationData]);
     
