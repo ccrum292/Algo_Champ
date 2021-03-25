@@ -20,6 +20,8 @@ import IconButton from '@material-ui/core/IconButton';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Divider from '@material-ui/core/Divider';
+import Typography from '@material-ui/core/Typography';
+
 
 
 
@@ -82,15 +84,17 @@ export default function NewAlgoForm (props) {
   const [inputAndOutputArr, setInputAndOutputArr] = useState([]);
   const [input, setInput] = useState("Test Case Input *");
   const [output, setOutput] = useState("Test Case Output *");
+  const [errorMsg, setErrorMsg] = useState("");
 
 
   const handleNewAlgorithmFormSubmit = async e => {
     e.preventDefault();
     console.log("submit");
+    setErrorMsg("");
 
     if(!currentClass.id || !title || !directions || starterCode === "Your Starter Code Here *"
       || !inputAndOutputArr[0] || !airDate) {
-        console.log("no")
+        setErrorMsg("Please complete all required fields denoted by the *")
         return
       }
 
@@ -326,7 +330,9 @@ export default function NewAlgoForm (props) {
             </ListSubheader>
           }
           >
+            <Divider />
             {inputAndOutputArr[0] ? inputAndOutputArr.map((val, i) => (
+              <>
                 <ListItem key={i}>
                   <ListItemText primary={`Input: ${val.input}`} />
                   <ListItemText primary={`Output: ${val.output}`} />
@@ -335,6 +341,8 @@ export default function NewAlgoForm (props) {
                     <ClearIcon />
                   </IconButton>
                 </ListItem>
+                <Divider />
+              </>
             )) :
 
               <ListItem>
@@ -344,6 +352,9 @@ export default function NewAlgoForm (props) {
           </List>
         </Grid>
       </Grid>
+      <Typography color="secondary" variant="h6">
+          {errorMsg}
+      </Typography>
       <Button
         type="submit"
         fullWidth
