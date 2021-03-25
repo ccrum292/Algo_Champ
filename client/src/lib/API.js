@@ -20,11 +20,16 @@ export default {
   },
 
   Answers: {
-    addAnswer: function(codeMirrorValue, userId, problemId) {
+    addAnswer: function(authToken, codeMirrorValue, userId, problemId) {
       return axios.post("/api/answers", {
         codeText: codeMirrorValue,
         UserId: userId,
         ProblemId: problemId
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
       })
     }
   },
@@ -90,12 +95,13 @@ export default {
   },
   
   Problems: {
-    createProblem: function(authToken, classId, title, description, startingCode, displayValueArr, testDataArr, classProblemObj) {
+    createProblem: function(authToken, classId, title, description, 
+      startingCode, displayExampleArr, testDataArr, classProblemObj) {
       return axios.post("/api/joinrequests/accept/" + classId, {
         title,
         description,
         startingCode,
-        displayValueArr,
+        displayExampleArr,
         testDataArr,
         classProblemObj
       }, {

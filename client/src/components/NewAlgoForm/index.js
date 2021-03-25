@@ -1,5 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import API from '../../lib/API';
+import UserAndAuthContext from '../../context/AuthContext';
 
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -10,6 +12,19 @@ import InputLabel from '@material-ui/core/InputLabel';
 import { MenuItem } from '@material-ui/core';
 import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ClearIcon from '@material-ui/icons/Clear';
+import IconButton from '@material-ui/core/IconButton';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Divider from '@material-ui/core/Divider';
+
+
+
+
+
 
 import {UnControlled as CodeMirror} from 'react-codemirror2';
 require('codemirror/lib/codemirror.css');
@@ -35,7 +50,13 @@ const useStyles = makeStyles((theme) => ({
     padding: 0
   },
   fullCodeMirror: {
-    height: "100%"
+    height: "100%",
+  },
+  boldRed: {
+    color: "red"
+  },
+  smallCodeMirror: {
+    height: 60,
   }
 }));
 
@@ -49,24 +70,41 @@ export default function NewAlgoForm (props) {
     lineNumbers: true,
   }
 
+  const { authToken, currentClass } = useContext(UserAndAuthContext);
   const [title, setTitle] = useState(null);
   const [difficulty, setDifficulty] = useState(undefined);
   const [airDate, setAirDate] = useState(undefined);
   const [airDateBonusModifier, setAirDateBonusModifier] = useState(2);
   const [bonusDuration, setBonusDuration] = useState(45);
-  const [directions, setDirections] = useState("");
-  const [codeMirrorValue, setCodeMirrorValue] = useState(null);
+  const [directions, setDirections] = useState(null);
+  const [starterCode, setStarterCode] = useState("Your Starter Code Here *");
   const [example, setExample] = useState(null);
   const [inputAndOutputArr, setInputAndOutputArr] = useState([]);
-  const [input, setInput] = useState(null);
-  const [inputType, setInputType] = useState(null);
-  const [output, setOutput] = useState(null);
-  const [outputType, setOutputType] = useState(null);
+  const [input, setInput] = useState("Test Case Input *");
+  const [output, setOutput] = useState("Test Case Output *");
 
 
-  const handleNewAlgorithmFormSubmit = e => {
+  const handleNewAlgorithmFormSubmit = async e => {
     e.preventDefault();
-    console.log("submit")
+    console.log("submit");
+
+    if(!currentClass.id || !title || !directions || starterCode === "Your Starter Code Here *"
+      || !inputAndOutputArr[0] || !airDate) {
+        console.log("no")
+        return
+      }
+
+    const classProblemObj = {
+      airDate: airDate,
+      airDateBonusModifier: airDateBonusModifier,
+      airDateBonusLength: bonusDuration
+    };
+
+    const createProblemData = await API.Problems.createProblem(authToken, currentClass.id, title, 
+      directions, starterCode, [example], inputAndOutputArr, classProblemObj)
+
+    console.log(createProblemData);
+
   };
 
   const handleDifficultyChange = e => {
@@ -74,9 +112,22 @@ export default function NewAlgoForm (props) {
     setDifficulty(e.target.value);
   }
 
-  const handleInputOutputField = () => {
+  const handleInputOutputSave = () => {
+    const val =  {
+      input: input,
+      output: output
+    }
 
+    setInputAndOutputArr([...inputAndOutputArr, val])
+    setInput("Test Case Input *");
+    setOutput("Test Case Output *");
+  };
 
+  const handleInputOutputDelete = e => {
+    const newInputOutputArr = inputAndOutputArr.filter(obj => {
+      if (obj.input !== e.currentTarget.dataset.input || obj.output !== e.currentTarget.dataset.output) return true;
+    })
+    setInputAndOutputArr(newInputOutputArr);
   };
 
   return(
@@ -218,10 +269,10 @@ export default function NewAlgoForm (props) {
         <Grid item xs={12} sm={6}>
           <CodeMirror
             className={classes.fullCodeMirror}
-            value={"// Your Starter Code Here"}
+            value={starterCode}
             options={options}
             onChange={(editor, data, value) => {
-              setCodeMirrorValue(value);
+              setStarterCode(value);
             }}
           />
         </Grid>
@@ -229,7 +280,6 @@ export default function NewAlgoForm (props) {
           <TextField
               onChange={e => setExample(e.target.value)}
               variant="outlined"
-              required
               fullWidth
               id="exampleInputAndOutput"
               label="Displayed Example Input and Output"
@@ -238,69 +288,61 @@ export default function NewAlgoForm (props) {
               rows={3}
             />
         </Grid>
-        <Grid item xs={6} sm={3}>
-          <TextField 
-            onChange={e => setTitle(e.target.value)}
-            name="createTitle"
-            variant="outlined"
-            required
-            fullWidth
-            id="createTitle"
-            label="Algo Title"
-            autoFocus
-          />
+        <Grid item xs={12} sm={6} md={5}>
+          <CodeMirror
+              className={classes.smallCodeMirror}
+              value={input}
+              options={options}
+              onChange={(editor, data, value) => {
+                setInput(value);
+              }}
+            />
         </Grid>
-        <Grid item xs={6} sm={2}>
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel id="airDateModifier">Air Date Bonus</InputLabel>
-            <Select
-              labelId="airDateModifier"
-              id="airDateModifierBonus"
-              value={difficulty}
-              onChange={e => setAirDateBonusModifier(e.target.value)}
-              label="Difficulty"
-            >
-              <MenuItem value={1}>None</MenuItem>
-              <MenuItem value={1}>1</MenuItem>
-              <MenuItem value={2}>2</MenuItem>
-              <MenuItem value={3}>3</MenuItem>
-              <MenuItem value={4}>4</MenuItem>
-              <MenuItem value={5}>5</MenuItem>
-            </Select>
-          </FormControl>
+        <Grid item xs={12} sm={6} md={5}>
+          <CodeMirror
+              className={classes.smallCodeMirror}
+              value={output}
+              options={options}
+              onChange={(editor, data, value) => {
+                setOutput(value);
+              }}
+            />
         </Grid>
-        <Grid item xs={6} sm={3}>
-          <TextField 
-            onChange={e => setTitle(e.target.value)}
-            name="createTitle"
-            variant="outlined"
-            required
-            fullWidth
-            id="createTitle"
-            label="Algo Title"
-            autoFocus
-          />
+        <Grid item container justify="center" alignItems="center"  xs={12} md={2}>
+          <Button
+          variant="contained"
+          color="primary"
+          onClick={handleInputOutputSave}
+          >
+            Add Test Case
+          </Button>
         </Grid>
-        <Grid item xs={6} sm={2}>
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel id="airDateModifier">Air Date Bonus</InputLabel>
-            <Select
-              labelId="airDateModifier"
-              id="airDateModifierBonus"
-              value={difficulty}
-              onChange={e => setAirDateBonusModifier(e.target.value)}
-              label="Difficulty"
-            >
-              <MenuItem value={"sting"}>string</MenuItem>
-              <MenuItem value={"number"}>number</MenuItem>
-              <MenuItem value={""}></MenuItem>
-              <MenuItem value={3}>3</MenuItem>
-              <MenuItem value={4}>4</MenuItem>
-              <MenuItem value={5}>5</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
+        <Grid item xs={12}>
+          <List
+          aria-labelledby="test-cases"
+          subheader={
+            <ListSubheader id="test-cases">
+              List of Test Cases
+            </ListSubheader>
+          }
+          >
+            {inputAndOutputArr[0] ? inputAndOutputArr.map((val, i) => (
+                <ListItem key={i}>
+                  <ListItemText primary={`Input: ${val.input}`} />
+                  <ListItemText primary={`Output: ${val.output}`} />
+                  <IconButton data-input={val.input} data-output={val.output} 
+                  onClick={handleInputOutputDelete}>
+                    <ClearIcon />
+                  </IconButton>
+                </ListItem>
+            )) :
 
+              <ListItem>
+                <ListItemText className={classes.boldRed}  primary="Empty *" />
+              </ListItem>
+            }
+          </List>
+        </Grid>
       </Grid>
       <Button
         type="submit"

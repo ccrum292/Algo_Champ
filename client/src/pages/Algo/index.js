@@ -22,8 +22,6 @@ const useStyles = makeStyles((theme) => ({
   appBarSpacer: theme.mixins.toolbar,
   container: {
     flexGrow: 1,
-    height: '100vh',
-    overflow: 'auto',
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
   },
@@ -54,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Algo(props) {
+export default function Algo() {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeightConsole);
@@ -72,12 +70,12 @@ export default function Algo(props) {
   let value = '// Hello World';
 
   const [codeMirrorValue, setCodeMirrorValue] = useState(value);
-  const { user } = useContext(UserAndAuthContext);
+  const { user, authToken } = useContext(UserAndAuthContext);
 
   const handleSubmit = async e => {
     e.preventDefault();
 
-    const data = await API.Answers.addAnswer(codeMirrorValue, user.id, 1);
+    const data = await API.Answers.addAnswer(authToken, codeMirrorValue, user.id, 1);
     console.log(data);
 
   }

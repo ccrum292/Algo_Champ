@@ -30,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
 
   },
   appBarSpacer: theme.mixins.toolbar,
+  headingLg: {
+    textAlign: "center"
+  }
 
 
 }));
@@ -44,7 +47,7 @@ export default function Login() {
         <Avatar className={classes.avatar}>
           <CodeIcon />
         </Avatar>
-        <Typography component="h1" variant="h3">
+        <Typography className={classes.headingLg} component="h1" variant="h3">
           Welcome to Algo_Champ
         </Typography>
         <Typography className={classes.subHeading} variant="h5">

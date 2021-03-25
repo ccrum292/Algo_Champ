@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 // Admin Creates a Problem with examples and tests
 problemsController.post('/', JWTVerifier, async (req, res) => {
   try {
-    const {title, description, startingCode, classId, displayValueArr, testDataArr, classProblemObj} = req.body;
+    const {title, description, startingCode, classId, displayExampleArr, testDataArr, classProblemObj} = req.body;
     const classUserData = await db.ClassUser.findOne({
       where: {
         ClassId: classId,
@@ -32,7 +32,7 @@ problemsController.post('/', JWTVerifier, async (req, res) => {
       ProblemId: problemCreationData.id
     })
 
-    const newDisplayValueArr = displayValueArr.map(val => {
+    const newDisplayExampleArr = displayExampleArr.map(val => {
       return {
         displayValue: val,
         ProblemId: problemCreationData.id
@@ -45,7 +45,11 @@ problemsController.post('/', JWTVerifier, async (req, res) => {
       }
     });
 
-    let [exampleCreationData, testsCreationData] = await Promise.all([db.Example.bulkCreate(newDisplayValueArr), db.Test.bulkCreate(newTestDataArr)]);
+    let [exampleCreationData, testsCreationData] = await Promise.all(
+      [
+        db.Example.bulkCreate(newDisplayExampleArr), 
+        db.Test.bulkCreate(newTestDataArr)
+      ]);
 
     res.json([classProblemData, problemCreationData, exampleCreationData, testsCreationData]);
     

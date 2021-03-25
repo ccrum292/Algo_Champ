@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const uneval = require('uneval');
 const evaluateFunc = require("../../lib/convertFunction");
 
-answersController.post('/', async (req, res) => {
+answersController.post('/', JWTVerifier, async (req, res) => {
   try {
     const { codeText, UserId, ProblemId } = req.body;
     const data = await db.Answer.create({ codeText, UserId, ProblemId });
@@ -22,7 +22,7 @@ answersController.post('/', async (req, res) => {
         output: test.output
       }
     })
-    
+
     const eval = evaluateFunc(codeText, inputOutput);
 
     res.json(eval);
