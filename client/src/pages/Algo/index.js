@@ -12,8 +12,8 @@ import Button from '@material-ui/core/Button'
 
 import {UnControlled as CodeMirror} from 'react-codemirror2';
 import UserAndAuthContext from '../../context/AuthContext';
-require('codemirror/lib/codemirror.css');
-require('codemirror/theme/material.css');
+require('../../lib/codemirrorStyles/codemirror.css');
+require('../../lib/codemirrorStyles/material.css');
 require('codemirror/mode/javascript/javascript.js');
 
 

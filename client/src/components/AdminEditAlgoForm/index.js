@@ -63,9 +63,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function NewAlgoForm (props) {
+export default function AdminEditAlgoForm (props) {
   const classes = useStyles();
-
+  console.log("props ------------", props)
   let options = {
     mode: 'javascript',
     theme: 'material',
@@ -73,15 +73,19 @@ export default function NewAlgoForm (props) {
   }
 
   const { authToken, currentClass } = useContext(UserAndAuthContext);
-  const [title, setTitle] = useState(null);
-  const [difficulty, setDifficulty] = useState(undefined);
-  const [airDate, setAirDate] = useState(undefined);
-  const [airDateBonusModifier, setAirDateBonusModifier] = useState(2);
-  const [bonusDuration, setBonusDuration] = useState(45);
-  const [directions, setDirections] = useState(null);
-  const [starterCode, setStarterCode] = useState("Your Starter Code Here *");
-  const [example, setExample] = useState(null);
-  const [inputAndOutputArr, setInputAndOutputArr] = useState([]);
+  const [problemId, setProblemId] = useState(props.problemId);
+  const [title, setTitle] = useState(props.title);
+  const [difficulty, setDifficulty] = useState(props.difficulty);
+  const [airDate, setAirDate] = useState(props.airDate.split(".")[0]);
+  const [airDateBonusModifier, setAirDateBonusModifier] = useState(props.airDateBonusModifier);
+  const [bonusDuration, setBonusDuration] = useState(props.airDateBonusLength);
+  const [directions, setDirections] = useState(props.directions);
+  const [starterCode, setStarterCode] = useState(props.starterCode);
+  const [example, setExample] = useState(props.example);
+  const [exampleId, setExampleId] = useState(props.exampleId)
+  const [inputAndOutputArr, setInputAndOutputArr] = useState(props.tests);
+  const [newInputOutputArr, setNewInputOutputArr] = useState([]);
+  const [deleteInputOutputArrOfIds, setDeleteInputOutputArrOfIds] = useState([])
   const [input, setInput] = useState("Test Case Input *");
   const [output, setOutput] = useState("Test Case Output *");
   const [errorMsg, setErrorMsg] = useState("");
@@ -104,10 +108,10 @@ export default function NewAlgoForm (props) {
       airDateBonusLength: bonusDuration
     };
 
-    const createProblemData = await API.Problems.createProblem(authToken, currentClass.id, title, 
-      directions, starterCode, difficulty, [example], inputAndOutputArr, classProblemObj)
+    const updateProblemData = await API.Problems.updateProblem(authToken, currentClass.id, problemId, title, 
+      directions, starterCode, difficulty, [example], exampleId, newInputOutputArr, deleteInputOutputArrOfIds, classProblemObj)
 
-    console.log(createProblemData);
+    console.log("--- update response ---", updateProblemData);
 
   };
 
@@ -119,10 +123,11 @@ export default function NewAlgoForm (props) {
   const handleInputOutputSave = () => {
     const val =  {
       input: input,
-      output: output
+      output: output,
     }
 
-    setInputAndOutputArr([...inputAndOutputArr, val])
+    setNewInputOutputArr([...newInputOutputArr, val]);
+    setInputAndOutputArr([...inputAndOutputArr, val]);
     setInput("Test Case Input *");
     setOutput("Test Case Output *");
   };
@@ -132,6 +137,7 @@ export default function NewAlgoForm (props) {
       if (obj.input !== e.currentTarget.dataset.input || obj.output !== e.currentTarget.dataset.output) return true;
     })
     setInputAndOutputArr(newInputOutputArr);
+    if (e.currentTarget.dataset.id) setDeleteInputOutputArrOfIds([...deleteInputOutputArrOfIds, e.currentTarget.dataset.id]);
   };
 
   return(
@@ -147,6 +153,7 @@ export default function NewAlgoForm (props) {
             id="createTitle"
             label="Algo Title"
             autoFocus
+            defaultValue={title}
           />
         </Grid>
         <Grid item xs={6} sm={2}>
@@ -158,6 +165,7 @@ export default function NewAlgoForm (props) {
               value={difficulty}
               onChange={handleDifficultyChange}
               label="Difficulty"
+              defaultValue={difficulty}
             >
               <MenuItem value={1}>
                 <StarIcon />
@@ -211,6 +219,7 @@ export default function NewAlgoForm (props) {
               console.log(e.target.value);
               setAirDate(e.target.value)
             }}
+            defaultValue={airDate}
           />
         </Grid>
         <Grid item xs={6} sm={2}>
@@ -238,9 +247,9 @@ export default function NewAlgoForm (props) {
             <Select
               labelId="bunusDuration"
               id="bonusDurationInMinutes"
-              value={difficulty}
+              value={bonusDuration}
               onChange={e => setBonusDuration(e.target.value)}
-              label="Difficulty"
+              label=""
             >
               <MenuItem value={0}>None</MenuItem>
               <MenuItem value={5}>5 minutes</MenuItem>
@@ -268,6 +277,7 @@ export default function NewAlgoForm (props) {
             name="directions"
             multiline={true}
             rows={5}
+            defaultValue={directions}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -290,6 +300,7 @@ export default function NewAlgoForm (props) {
               name="exampleInputAndOutput"
               multiline={true}
               rows={3}
+              defaultValue={example}
             />
         </Grid>
         <Grid item xs={12} sm={6} md={5}>
@@ -336,8 +347,8 @@ export default function NewAlgoForm (props) {
                 <ListItem key={i}>
                   <ListItemText primary={`Input: ${val.input}`} />
                   <ListItemText primary={`Output: ${val.output}`} />
-                  <IconButton data-input={val.input} data-output={val.output} 
-                  onClick={handleInputOutputDelete}>
+                  <IconButton data-id={val.id} data-input={val.input} data-output={val.output} 
+                    onClick={handleInputOutputDelete}>
                     <ClearIcon />
                   </IconButton>
                 </ListItem>
@@ -362,7 +373,7 @@ export default function NewAlgoForm (props) {
         color="primary"
         className={classes.submit}
       >
-        Create
+        Update
       </Button>
       <Grid container justify="flex-end">
         <Grid item>

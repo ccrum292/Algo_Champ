@@ -108,7 +108,6 @@ export default function Students() {
                               <ClearIcon />
                             </IconButton>
                           </ListItem>
-  
                         )
                       }) : null
                     }

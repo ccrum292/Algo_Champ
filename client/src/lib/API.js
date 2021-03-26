@@ -96,11 +96,13 @@ export default {
   
   Problems: {
     createProblem: function(authToken, classId, title, description, 
-      startingCode, displayExampleArr, testDataArr, classProblemObj) {
-      return axios.post("/api/joinrequests/accept/" + classId, {
+      startingCode, difficulty, displayExampleArr, testDataArr, classProblemObj) {
+      return axios.post("/api/problems", {
+        classId,
         title,
         description,
         startingCode,
+        difficulty,
         displayExampleArr,
         testDataArr,
         classProblemObj
@@ -110,6 +112,36 @@ export default {
         }
       });
     },
+
+    getProblemsForClass: function(authToken, classId) {
+      return axios.get("/api/problems/" + classId, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      });
+    },
+
+    updateProblem: function(authToken, classId, problemId, title, description, 
+      startingCode, difficulty, displayExampleArr, exampleId, newInputOutputArr, deleteInputOutputArrOfIds, classProblemObj) {
+      return axios.put("/api/problems", {
+        classId,
+        problemId,
+        title,
+        description,
+        startingCode,
+        difficulty,
+        displayExampleArr,
+        exampleId,
+        newInputOutputArr,
+        deleteInputOutputArrOfIds,
+        classProblemObj
+      }, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      });
+    },
+
   }
 
 };

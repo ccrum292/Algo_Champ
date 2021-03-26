@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
+import { format, parseISO } from "date-fns";
+
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
@@ -13,6 +15,10 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 import NewAlgoForm from "../../components/NewAlgoForm";
+import AdminEditAlgoForm from "../../components/AdminEditAlgoForm";
+
+import API from "../../lib/API";
+import UserAndAuthContext from "../../context/AuthContext";
 
 const drawerWidth = 240;
 
@@ -64,6 +70,41 @@ export default function AdminAlgo() {
   const tableDivPaper = clsx(classes.paper, classes.tableDiv);
 
   const [expanded, setExpanded] = useState(false);
+  const { authToken, currentClass } = useContext(UserAndAuthContext);
+  const [problemsArr, setProblemsArr] = useState(null);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const getProblems = async () => {
+    setErrorMsg("");
+    try{
+      const problemsData = await API.Problems.getProblemsForClass(authToken, currentClass.id)
+      console.log("hello")
+      const sortForAirDate = problemsData.data.sort((a, b) => {
+        let comparison = 0;
+  
+        if (a.ClassProblem.airDate > b.ClassProblem.airDate) {
+          comparison = 1;
+        } else if (a.ClassProblem.airDate < b.ClassProblem.airDate) {
+          comparison = -1;
+        }
+        return comparison;
+      });
+  
+      console.log("sort", sortForAirDate);
+  
+      setProblemsArr(sortForAirDate);
+
+    } catch (err) {
+      setErrorMsg(err.message)
+    };
+  }
+
+
+  useEffect(() => {
+    getProblems();
+  }, []);
+
+
 
   const handleAccordionChange = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -81,7 +122,7 @@ export default function AdminAlgo() {
           <Grid container spacing={3}>
             <Grid item xs={12} md={8} lg={12}>
               <Paper className={tableDivPaper}>
-                <Accordion expanded={expanded === 'panel1'} onChange={handleAccordionChange('panel1')}>
+                <Accordion expanded={expanded === 'panel0'} onChange={handleAccordionChange('panel0')}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1bh-content"
@@ -94,57 +135,31 @@ export default function AdminAlgo() {
                     <NewAlgoForm></NewAlgoForm>
                   </AccordionDetails>
                 </Accordion>
-                <Accordion expanded={expanded === 'panel2'} onChange={handleAccordionChange('panel2')}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel2bh-content"
-                    id="panel2bh-header"
-                  >
-                    <Typography className={classes.heading}>Users</Typography>
-                    <Typography className={classes.secondaryHeading}>
-                      You are currently not an owner
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Typography>
-                      Donec placerat, lectus sed mattis semper, neque lectus feugiat lectus, varius pulvinar
-                      diam eros in elit. Pellentesque convallis laoreet laoreet.
-                    </Typography>
-                  </AccordionDetails>
-                </Accordion>
-                <Accordion expanded={expanded === 'panel3'} onChange={handleAccordionChange('panel3')}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel3bh-content"
-                    id="panel3bh-header"
-                  >
-                    <Typography className={classes.heading}>Advanced settings</Typography>
-                    <Typography className={classes.secondaryHeading}>
-                      Filtering has been entirely disabled for whole web server
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Typography>
-                      Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer sit amet egestas eros,
-                      vitae egestas augue. Duis vel est augue.
-                    </Typography>
-                  </AccordionDetails>
-                </Accordion>
-                <Accordion expanded={expanded === 'panel4'} onChange={handleAccordionChange('panel4')}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel4bh-content"
-                    id="panel4bh-header"
-                  >
-                    <Typography className={classes.heading}>Personal data</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Typography>
-                      Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer sit amet egestas eros,
-                      vitae egestas augue. Duis vel est augue.
-                    </Typography>
-                  </AccordionDetails>
-                </Accordion>
+                {problemsArr ? problemsArr.map(obj => (
+                  <Accordion key={obj.id} expanded={expanded === `panel${obj.id}`} 
+                    onChange={handleAccordionChange(`panel${obj.id}`)}>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls={`panel${obj.id}-content`}
+                      id={`panel${obj.id}-header`}
+                    >
+                      <Typography className={classes.heading}>{obj.title}</Typography>
+                      <Typography className={classes.secondaryHeading}>
+                        Air Date: {format(parseISO(obj.ClassProblem.airDate), "MM-dd-yyyy pp")}
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <AdminEditAlgoForm title={obj.title} difficulty={obj.difficulty} 
+                      airDate={obj.ClassProblem.airDate} airDateBonusModifier={obj.ClassProblem.airDateBonusModifier}
+                      airDateBonusLength={obj.ClassProblem.airDateBonusLength} directions={obj.description} 
+                      starterCode={obj.startingCode} example={obj.Examples[0].displayValue}
+                      tests={obj.Tests} problemId={obj.id} exampleId={obj.Examples[0].id} />
+                    </AccordionDetails>
+                  </Accordion> 
+                ))
+                  :
+                  <Typography color="secondary" variant="h6" >{errorMsg}</Typography>
+                }
               </Paper>
             </Grid>
           </Grid>

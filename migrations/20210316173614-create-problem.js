@@ -13,10 +13,16 @@ module.exports = {
         unique: true
       },
       description: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue: "Description Here"
       },
       startingCode: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue: "// Hello World"
+      },
+      difficulty: {
+        type: Sequelize.INTEGER,
+        defaultValue: 1
       },
       createdAt: {
         allowNull: false,

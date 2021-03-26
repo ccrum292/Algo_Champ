@@ -5,8 +5,18 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       unique: true
     },
-    description: DataTypes.STRING,
-    startingCode: DataTypes.STRING
+    description: {
+      type: DataTypes.STRING,
+      defaultValue: "Description Here"
+    },
+    startingCode: {
+      type: DataTypes.STRING,
+      defaultValue: "// Hello World"
+    },
+    difficulty: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1
+    }
   }, {});
   Problem.associate = function(models) {
     Problem.hasMany(models.Answer, {

@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 // Admin Creates a Problem with examples and tests
 problemsController.post('/', JWTVerifier, async (req, res) => {
   try {
-    const {title, description, startingCode, classId, displayExampleArr, testDataArr, classProblemObj} = req.body;
+    const {title, description, startingCode, classId, difficulty, displayExampleArr, testDataArr, classProblemObj} = req.body;
     const classUserData = await db.ClassUser.findOne({
       where: {
         ClassId: classId,
@@ -23,7 +23,7 @@ problemsController.post('/', JWTVerifier, async (req, res) => {
       title: title,
       description: description,
       startingCode: startingCode,
-
+      difficulty: difficulty
     });
 
     const classProblemData = await db.ClassProblem.create({
@@ -60,33 +60,103 @@ problemsController.post('/', JWTVerifier, async (req, res) => {
 });
 
 
-// Admin gets joinRequests
-// problemsController.get('/:classId', JWTVerifier, async (req, res) => {
-//   try {
-//     const classUserData = await db.ClassUser.findOne({
-//       where: {
-//         ClassId: req.params.classId,
-//         UserId: req.user.id,
-//         admin: 1
-//       }
-//     });
+problemsController.get('/:classId', JWTVerifier, async (req, res) => {
+  try {
+    const classUserData = await db.ClassUser.findOne({
+      where: {
+        ClassId: req.params.classId,
+        UserId: req.user.id,
+      }
+    });
 
-//     if (!classUserData) return res.sendStatus(401);
+    if (!classUserData) return res.sendStatus(401);
 
-//     const joinRequests = await db.joinRequest.findAll({
-//       where: {
-//         ClassId: req.params.classId,
-//         pending: 1
-//       }
-//     })
+    const classData = await db.Class.findByPk(req.params.classId)
 
-//     res.json(joinRequests);
+    const problemsArr = await classData.getProblems({
+      include: [{
+        model: db.Test
+      }, {
+        model: db.Example
+      }]
+    });
 
-//   } catch (err) {
-//     console.log(err);
-//     res.json(err);
-//   }
-// });
+    res.json(problemsArr);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500);
+    res.send(err.message)
+  }
+});
+
+problemsController.put('/', JWTVerifier, async (req, res) => {
+  try {
+    const {title, description, startingCode, classId, problemId, difficulty, displayExampleArr, exampleId, newInputOutputArr, deleteInputOutputArrOfIds, classProblemObj} = req.body;
+    
+    const classUserData = await db.ClassUser.findOne({
+      where: {
+        ClassId: classId,
+        UserId: req.user.id,
+      }
+    });
+    
+    if (!classUserData) return res.sendStatus(401);
+    
+    const newTestDataArr = newInputOutputArr.map(val => {
+      return { ...val, 
+        ProblemId: problemId
+      }
+    });
+
+    let [problemUpdateData, classProblemUpdateData, exampleUpdateData, testDeleteData, testCreateData] = await Promise.all([
+      db.Problem.update({
+        title,
+        description,
+        startingCode,
+        difficulty
+      }, {
+        where: {
+          id: problemId
+        }
+      }),
+      db.ClassProblem.update({
+        classProblemObj
+      }, {
+        where: {
+          ClassId: classId,
+          ProblemId: problemId
+        }
+      }),
+      db.Example.update({
+        displayValue: displayExampleArr[0]
+      }, {
+        where: {
+          id: exampleId
+        }
+      }),
+      Promise.all(deleteInputOutputArrOfIds.map(async val => {
+        const data = await db.Test.destroy({
+          where: {
+            id: val
+          }
+        });
+  
+        return data;
+      })),
+      db.Test.bulkCreate(newTestDataArr)
+    ])
+
+    res.json([problemUpdateData, classProblemUpdateData, exampleUpdateData, testDeleteData, testCreateData]);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500);
+    res.send(err.message)
+  }
+});
+
+
 
 // Admin accepts joinRequest and deletes
 // problemsController.post('/accept/:classId', JWTVerifier, async (req, res) => {
