@@ -4,7 +4,7 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
       return queryInterface.bulkInsert('Classusers', [{
         admin: false,
-        score: 0,
+        score: 5,
         algorithmsCompleted: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -13,7 +13,7 @@ module.exports = {
       },
       {
         admin: false,
-        score: 0,
+        score: 10,
         algorithmsCompleted: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -30,7 +30,7 @@ module.exports = {
       },
       {
         admin: false,
-        score: 0,
+        score: 15,
         algorithmsCompleted: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
