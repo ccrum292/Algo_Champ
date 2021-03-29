@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function NewAlgoForm (props) {
+export default function NewAlgoForm ({ setModalOpen, setModalTitle, setExpanded, reRender, setReRender, setLoading }) {
   const classes = useStyles();
 
   let options = {
@@ -74,7 +74,7 @@ export default function NewAlgoForm (props) {
 
   const { authToken, currentClass } = useContext(UserAndAuthContext);
   const [title, setTitle] = useState(null);
-  const [difficulty, setDifficulty] = useState(undefined);
+  const [difficulty, setDifficulty] = useState(2);
   const [airDate, setAirDate] = useState(undefined);
   const [airDateBonusModifier, setAirDateBonusModifier] = useState(2);
   const [bonusDuration, setBonusDuration] = useState(45);
@@ -85,7 +85,6 @@ export default function NewAlgoForm (props) {
   const [input, setInput] = useState("Test Case Input *");
   const [output, setOutput] = useState("Test Case Output *");
   const [errorMsg, setErrorMsg] = useState("");
-
 
   const handleNewAlgorithmFormSubmit = async e => {
     e.preventDefault();
@@ -104,10 +103,33 @@ export default function NewAlgoForm (props) {
       airDateBonusLength: bonusDuration
     };
 
-    const createProblemData = await API.Problems.createProblem(authToken, currentClass.id, title, 
-      directions, starterCode, difficulty, [example], inputAndOutputArr, classProblemObj)
+    try{
+      setLoading(true);
+      const createProblemData = await API.Problems.createProblem(authToken, currentClass.id, title, 
+        directions, starterCode, difficulty, [example], inputAndOutputArr, classProblemObj)
+      setLoading(false);
+      setModalTitle("Algorithm Successfully Created")
+      setModalOpen(true);
+      setExpanded(false);
+      setReRender(!reRender);
 
-    console.log(createProblemData);
+      setTitle(null);
+      setDifficulty(2);
+      setAirDate(undefined);
+      setAirDateBonusModifier(2);
+      setBonusDuration(45);
+      setDirections(null);
+      setExample(null);
+      setStarterCode("Your Starter Code Here *")
+      setInput("Test Case Input *")
+      setOutput("Test Case Output *")
+      setInputAndOutputArr([])
+
+      e.target.reset();
+
+    } catch (err) {
+      console.log(err);
+    }
 
   };
 
@@ -147,6 +169,7 @@ export default function NewAlgoForm (props) {
             id="createTitle"
             label="Algo Title"
             autoFocus
+            defaultValue={title}
           />
         </Grid>
         <Grid item xs={6} sm={2}>
@@ -156,6 +179,7 @@ export default function NewAlgoForm (props) {
               labelId="difficultyInput"
               id="difficultyOutline"
               value={difficulty}
+              defaultValue={difficulty}
               onChange={handleDifficultyChange}
               label="Difficulty"
             >
@@ -208,7 +232,6 @@ export default function NewAlgoForm (props) {
               shrink: true,
             }}
             onChange={e => {
-              console.log(e.target.value);
               setAirDate(e.target.value)
             }}
           />
@@ -238,9 +261,10 @@ export default function NewAlgoForm (props) {
             <Select
               labelId="bunusDuration"
               id="bonusDurationInMinutes"
-              value={difficulty}
+              value={bonusDuration}
+              defaultValue={bonusDuration}
               onChange={e => setBonusDuration(e.target.value)}
-              label="Difficulty"
+              label="bonusDuration"
             >
               <MenuItem value={0}>None</MenuItem>
               <MenuItem value={5}>5 minutes</MenuItem>

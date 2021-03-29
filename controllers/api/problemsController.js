@@ -109,6 +109,8 @@ problemsController.put('/', JWTVerifier, async (req, res) => {
       }
     });
 
+    const {airDate, airDateBonusModifier, airDateBonusLength} = classProblemObj;
+
     let [problemUpdateData, classProblemUpdateData, exampleUpdateData, testDeleteData, testCreateData] = await Promise.all([
       db.Problem.update({
         title,
@@ -121,7 +123,10 @@ problemsController.put('/', JWTVerifier, async (req, res) => {
         }
       }),
       db.ClassProblem.update({
-        classProblemObj
+        inUse: 1,
+        airDate: airDate,
+        airDateBonusModifier: airDateBonusModifier,
+        airDateBonusLength: airDateBonusLength
       }, {
         where: {
           ClassId: classId,
@@ -145,7 +150,9 @@ problemsController.put('/', JWTVerifier, async (req, res) => {
         return data;
       })),
       db.Test.bulkCreate(newTestDataArr)
-    ])
+    ]);
+
+    console.log(classProblemUpdateData);
 
     res.json([problemUpdateData, classProblemUpdateData, exampleUpdateData, testDeleteData, testCreateData]);
 
@@ -157,6 +164,32 @@ problemsController.put('/', JWTVerifier, async (req, res) => {
 });
 
 
+problemsController.delete('/:classId/:problemId', JWTVerifier, async (req, res) => {
+  try {
+    const classUserData = await db.ClassUser.findOne({
+      where: {
+        ClassId: req.params.classId,
+        UserId: req.user.id,
+        admin: 1
+      }
+    });
+
+    if (!classUserData) return res.sendStatus(401);
+
+    const classProblemData = await db.ClassProblem.destroy({
+      where: {
+        ClassId: req.params.classId,
+        ProblemId: req.params.problemId
+      }
+    })
+
+    res.json(classProblemData);
+    
+  } catch (err) {
+    console.log(err);
+    res.json(err);
+  }
+});
 
 // Admin accepts joinRequest and deletes
 // problemsController.post('/accept/:classId', JWTVerifier, async (req, res) => {

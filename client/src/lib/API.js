@@ -142,6 +142,13 @@ export default {
       });
     },
 
-  }
+    deleteProblemFromClass: function(authToken, classId, problemId) {
+      return axios.delete(`/api/problems/${classId}/${problemId}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      });
+    }
 
+  }
 };

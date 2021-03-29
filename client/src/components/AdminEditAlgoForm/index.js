@@ -65,13 +65,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AdminEditAlgoForm (props) {
   const classes = useStyles();
-  console.log("props ------------", props)
   let options = {
     mode: 'javascript',
     theme: 'material',
     lineNumbers: true,
   }
-
+  
+  const { setModalOpen, setModalTitle, setExpanded, reRender, setReRender, setLoading } = props;
   const { authToken, currentClass } = useContext(UserAndAuthContext);
   const [problemId, setProblemId] = useState(props.problemId);
   const [title, setTitle] = useState(props.title);
@@ -89,11 +89,11 @@ export default function AdminEditAlgoForm (props) {
   const [input, setInput] = useState("Test Case Input *");
   const [output, setOutput] = useState("Test Case Output *");
   const [errorMsg, setErrorMsg] = useState("");
+  const [deleteButtonToggle, setDeleteButtonToggle] = useState(false);
 
 
   const handleNewAlgorithmFormSubmit = async e => {
     e.preventDefault();
-    console.log("submit");
     setErrorMsg("");
 
     if(!currentClass.id || !title || !directions || starterCode === "Your Starter Code Here *"
@@ -108,15 +108,44 @@ export default function AdminEditAlgoForm (props) {
       airDateBonusLength: bonusDuration
     };
 
-    const updateProblemData = await API.Problems.updateProblem(authToken, currentClass.id, problemId, title, 
-      directions, starterCode, difficulty, [example], exampleId, newInputOutputArr, deleteInputOutputArrOfIds, classProblemObj)
+    try{
+      setLoading(true);
+      const updateProblemData = await API.Problems.updateProblem(authToken, currentClass.id, problemId, title, 
+        directions, starterCode, difficulty, [example], exampleId, newInputOutputArr, deleteInputOutputArrOfIds, classProblemObj)
+      setLoading(false);
+      setModalTitle("Algorithm Successfully Updated");
+      setModalOpen(true);
+      setExpanded(false);
+      setReRender(!reRender);
 
-    console.log("--- update response ---", updateProblemData);
+    } catch (err) {
+      console.log(err);
+    }
+
+
 
   };
 
+  const handleProblemDelete = async e => {
+    e.preventDefault();
+    console.log("delete");
+
+    try {
+      setLoading(true);
+      const deletionData = await API.Problems.deleteProblemFromClass(authToken, currentClass.id, problemId);
+      setLoading(false);
+      setModalTitle("Algorithm Successfully Deleted from Class");
+      setModalOpen(true);
+      setExpanded(false);
+      setReRender(!reRender);
+
+    } catch (err) {
+      console.log(err);
+    }
+
+  }
+
   const handleDifficultyChange = e => {
-    console.log(e.target.value);
     setDifficulty(e.target.value);
   }
 
@@ -362,22 +391,52 @@ export default function AdminEditAlgoForm (props) {
             }
           </List>
         </Grid>
-      </Grid>
-      <Typography color="secondary" variant="h6">
-          {errorMsg}
-      </Typography>
-      <Button
-        type="submit"
-        fullWidth
-        variant="contained"
-        color="primary"
-        className={classes.submit}
-      >
-        Update
-      </Button>
-      <Grid container justify="flex-end">
         <Grid item>
+          <Typography color="secondary" variant="h6">
+              {errorMsg}
+          </Typography>
         </Grid>
+        <Grid item xs={12}>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+          >
+            Update
+          </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            fullWidth
+            variant="contained"
+            color="secondary"
+            onClick={e => setDeleteButtonToggle(true)}
+          >
+            Delete
+          </Button>
+        </Grid>
+        { deleteButtonToggle ?
+          <Grid item xs={12} container justify="space-evenly" alignItems="center"  xs={12} spacing={2}>
+            <Typography color="secondary" variant="h6">
+              Are You Sure you Want to Delete?
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={e => handleProblemDelete(e)}
+            >
+              Yes
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={e => setDeleteButtonToggle(false)}
+            >
+              No
+            </Button>
+          </Grid> : null
+        }
       </Grid>
     </form>
   )
