@@ -8,6 +8,10 @@ module.exports = (sequelize, DataTypes) => {
     score: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
+    },
+    algorithmsCompleted: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
     }
   }, {});
   ClassUser.associate = function(models) {

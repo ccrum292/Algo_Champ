@@ -109,9 +109,7 @@ export default function AdminAlgo() {
         }
         return comparison;
       });
-  
-      console.log("sort", sortForAirDate);
-  
+    
       setProblemsArr(sortForAirDate);
 
     } catch (err) {

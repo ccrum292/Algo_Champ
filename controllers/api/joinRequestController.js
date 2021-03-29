@@ -42,7 +42,6 @@ joinRequestController.post('/', JWTVerifier, async (req, res) => {
     });
 
     if (!classData) return res.sendStatus(404);
-    console.log(req.user);
     const joinRequest = await db.joinRequest.create({
       ClassId: classData.id,
       UserId: req.user.id,

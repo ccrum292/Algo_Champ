@@ -5,6 +5,7 @@ module.exports = {
       return queryInterface.bulkInsert('Classusers', [{
         admin: false,
         score: 0,
+        algorithmsCompleted: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
         UserId: 1,
@@ -13,6 +14,7 @@ module.exports = {
       {
         admin: false,
         score: 0,
+        algorithmsCompleted: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
         UserId: 2,
@@ -20,6 +22,7 @@ module.exports = {
       },{
         admin: true,
         score: 0,
+        algorithmsCompleted: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
         UserId: 3,
@@ -28,6 +31,7 @@ module.exports = {
       {
         admin: false,
         score: 0,
+        algorithmsCompleted: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
         UserId: 1,

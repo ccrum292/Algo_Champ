@@ -43,8 +43,16 @@ export default {
       });
     },
 
-    adminGetJoinRequests: function(authToken) {
-      return axios.get("/api/classes", {
+    getAllUsersForClass: function(authToken, classId) {
+      return axios.get("/api/classes/" + classId, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      });
+    },
+
+    removeStudentFromClass: function(authToken, classId, studentId) {
+      return axios.delete(`/api/classes/${classId}/${studentId}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         }

@@ -18,22 +18,57 @@ classesController.get('/', JWTVerifier, async (req, res) => {
   }
 });
 
-// classesController.get('/me', JWTVerifier, (req, res) => {
-// 	res.json(req.user);
-// });
+classesController.get('/:classId', JWTVerifier, async (req, res) => {
+  try {
+    const classData = await db.Class.findByPk(req.params.classId);
 
-// classesController.post('/login', (req, res) => {
-// 	const { email, password } = req.body;
+    const students = await classData.getUsers();
+    
+    const noPasswordStudentsData = students.map(({id, name, email, ClassUser}) => {
+      return {
+        id,
+        name,
+        email,
+        score: ClassUser.score,
+        algorithmsCompleted: ClassUser.algorithmsCompleted,
+      }
+    });
 
-// 	db.User.findOne({ where: { email } }).then((user) => {
-// 		if (!user) return res.status(404).send('User not Found');
-// 		if (user.dataValues.password !== password) return res.status(401).send('Unauthorized');
+    res.json(noPasswordStudentsData);
 
-// 		res.json({
-// 			token: jwt.sign({ sub: user.id }, process.env.JWT_SECRET),
-// 			user
-// 		});
-// 	});
-// });
+  } catch (err) {
+    console.log(err);
+    res.json(err);
+  }
+});
+
+
+classesController.delete('/:classId/:studentId', JWTVerifier, async (req, res) => {
+  try {
+    const classUserData = await db.ClassUser.findOne({
+      where: {
+        ClassId: req.params.classId,
+        UserId: req.user.id,
+        admin: 1
+      }
+    });
+
+    if (!classUserData) return res.sendStatus(401);
+
+    const removeUserFromClass = await db.ClassUser.destroy({
+      where: {
+        UserId: req.params.studentId,
+        ClassId: req.params.classId,
+        admin: 0
+      }
+    })
+
+    res.json(removeUserFromClass);
+
+  } catch (err) {
+    console.log(err);
+    res.json(err);
+  }
+});
 
 module.exports = classesController;

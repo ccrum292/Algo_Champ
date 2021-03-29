@@ -16,8 +16,9 @@ import Divider from '@material-ui/core/Divider';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import ClearIcon from '@material-ui/icons/Clear';
 import IconButton from '@material-ui/core/IconButton';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
-
+import AdminStudentTable from '../../components/AdminStudentTable';
 
 
 const drawerWidth = 240;
@@ -34,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     overflow: 'auto',
     flexDirection: 'column',
-    flexGrow: 1
   },
   fixedHeight: {
     height: 480,
@@ -57,10 +57,14 @@ export default function Students() {
 
   const { currentClass, authToken } = useContext(UserAndAuthContext);
   const [joinRequests, setJoinRequests] = useState(null);
+  const [loading, setLoading] = useState(false);
+
 
   const getData = async () => {
+    setLoading(true);
     const joinRequestsData = await API.JoinRequests.getJoinRequestsForAdmin(authToken, currentClass.id)
     setJoinRequests(joinRequestsData.data);
+    setLoading(false);
   }
 
 
@@ -71,25 +75,25 @@ export default function Students() {
   const handleAccept = async e => {
     e.currentTarget.parentElement.remove();
     const res = await API.JoinRequests.adminAcceptJoinRequest(authToken, e.currentTarget.dataset.classid, e.currentTarget.dataset.studentuserid, e.currentTarget.dataset.joinrequestid);
-    console.log(res);
   }
 
   const handleDecline = async e => {
     e.currentTarget.parentElement.remove();
     const res = await API.JoinRequests.adminDeclineJoinRequest(authToken, e.currentTarget.dataset.classid, e.currentTarget.dataset.joinrequestid);
-    console.log(res);
   }
 
   return (
         <Container component="main" maxWidth="lg" className={classes.container}>
           <div className={classes.appBarSpacer}></div>
+          {loading ? <LinearProgress color="secondary" /> : null}
           <Grid container spacing={3}>
             <Grid item xs={12} md={8} lg={9}>
-              <Paper className={tableDivPaper}>
-              </Paper>
+                <AdminStudentTable setLoading={setLoading} />
+              {/* <Paper className={tableDivPaper}>
+              </Paper> */}
             </Grid>
             <Grid item container justify="space-between"  direction="column" xs={12} md={4} lg={3}>
-                <Paper className={fixedHeightPaper}>
+                <Paper className={classes.paper}>
                   <Typography className={classes.mb1} component="h1" variant="h5">
                     Join Requests
                   </Typography>
@@ -97,7 +101,6 @@ export default function Students() {
                   <List>
                     { joinRequests ? 
                       joinRequests.map(val => {
-                        console.log(val);
                         return (
                           <ListItem key={val.id}>
                             <ListItemText primary={val.userEmail} />

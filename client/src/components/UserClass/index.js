@@ -109,7 +109,6 @@ export default function UserClass() {
   const handleClassRequestSubmit = async e => {
     e.preventDefault();
     const data = await API.JoinRequests.userRequestJoin(authToken, classRequestInputVal)
-    console.log(data);
 
     setSubmitMessage("Your Request Has Been Sent!")
     setTimeout(() => {
