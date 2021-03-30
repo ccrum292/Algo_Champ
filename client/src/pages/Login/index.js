@@ -11,6 +11,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import API from '../../lib/API';
 import UserAndAuthContext from "../../context/AuthContext";
@@ -54,6 +55,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   
   useEffect(() => {
@@ -72,8 +74,8 @@ export default function Login() {
     }
 
     try {
+      setLoading(true);
       const res = await API.Users.login(email, password);
-  
       TokenStore.setToken(res.data.token);
       setAuthToken(res.data.token);
       const user = {
@@ -82,6 +84,7 @@ export default function Login() {
         email: res.data.user.email
       }
       setUser(user);
+      setLoading(false);
       setRedirect(true);
 
     } catch (e) {
@@ -97,6 +100,7 @@ export default function Login() {
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.appBarSpacer}></div>
+      {loading ? <LinearProgress color="secondary" /> : null}
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />

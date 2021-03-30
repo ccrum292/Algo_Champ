@@ -89,7 +89,7 @@ export default function AdminStudentTable({ setLoading }) {
 
   useEffect(() => {
     getStudentData();
-  }, []);
+  }, [currentClass]);
 
 
   const goldSilverBronzeRow = i => {
@@ -113,7 +113,7 @@ export default function AdminStudentTable({ setLoading }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {students.map(({id, name, email, score, algorithmsCompleted}, i) => (
+          {students.map(({id, name, score, algorithmsCompleted}, i) => (
             <TableRow className={goldSilverBronzeRow(i)} key={id}>
               <TableCell className={classes.tableCell}>{i + 1}</TableCell>
               <TableCell className={classes.tableCell} align="left">

@@ -9,6 +9,8 @@ import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
+import DashboardList from "../../components/DashboardList";
+
 
 const drawerWidth = 240;
 
@@ -34,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
   },
   secondSmallPaper: {
     marginTop: theme.spacing(2),
+  },
+  heading1: {
+    marginLeft: theme.spacing(2)
   }
 }));
 
@@ -52,8 +57,7 @@ export default function Dashboard() {
           {loading ? <LinearProgress color="secondary" /> : null}
           <Grid container spacing={3}>
             <Grid item xs={12} md={8} lg={9}>
-              <Paper className={tableDivPaper}>
-              </Paper>
+              <DashboardList setLoading={setLoading} />
             </Grid>
             <Grid item container justify="space-between"  direction="column" xs={12} md={4} lg={3}>
               

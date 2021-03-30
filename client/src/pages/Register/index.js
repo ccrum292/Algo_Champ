@@ -11,6 +11,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 
 import API from '../../lib/API';
 
@@ -52,6 +54,7 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [secondPassword, setSecondPassword] = useState("");
   const [userMessage, setUserMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -61,8 +64,9 @@ export default function Register() {
     setUserMessage("");
 
     let name = `${firstName.trim()} ${lastName.trim()}`;
+    setLoading(true);
     const res = await API.Users.create(name, email, password);
-
+    setLoading(false);
     if(res.data.errors){
       setUserMessage("An account has already been created with the following email address: " + email);
       return
@@ -78,6 +82,7 @@ export default function Register() {
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.appBarSpacer}></div>
+      {loading ? <LinearProgress color="secondary" /> : null}
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />

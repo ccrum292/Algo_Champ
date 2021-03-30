@@ -4,6 +4,8 @@ const db = require('../../models');
 const { JWTVerifier } = require('../../lib/passport');
 const jwt = require('jsonwebtoken');
 
+const { format, parseISO } = require("date-fns");
+const timeConvert = require("../../lib/timeConvert");
 
 // Admin Creates a Problem with examples and tests
 problemsController.post('/', JWTVerifier, async (req, res) => {
@@ -62,15 +64,6 @@ problemsController.post('/', JWTVerifier, async (req, res) => {
 
 problemsController.get('/:classId', JWTVerifier, async (req, res) => {
   try {
-    const classUserData = await db.ClassUser.findOne({
-      where: {
-        ClassId: req.params.classId,
-        UserId: req.user.id,
-      }
-    });
-
-    if (!classUserData) return res.sendStatus(401);
-
     const classData = await db.Class.findByPk(req.params.classId)
 
     const problemsArr = await classData.getProblems({
@@ -82,6 +75,46 @@ problemsController.get('/:classId', JWTVerifier, async (req, res) => {
     });
 
     res.json(problemsArr);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500);
+    res.send(err.message)
+  }
+});
+
+problemsController.get('/dashboard/:classId', JWTVerifier, async (req, res) => {
+  try {
+    const classData = await db.Class.findByPk(req.params.classId)
+
+    const problemsArr = await classData.getProblems();
+
+    const modifiedProblemsArr = problemsArr.filter(obj => timeConvert(obj.ClassProblem.airDate).remainderSeconds > 0)
+      .map(obj => {
+
+        const timeData = timeConvert(obj.ClassProblem.airDate)
+        const airDateFormatted = format(obj.ClassProblem.airDate, "MM-dd-yyyy pp")
+        let airDateMod = null
+        let airDateModLength = null
+        let points = obj.difficulty;
+        if(timeData.totalMinutes < obj.ClassProblem.airDateBonusLength) {
+          airDateMod = obj.ClassProblem.airDateBonusModifier;
+          airDateModLength = obj.ClassProblem.airDateBonusLength - timeData.minutes;
+          points = points * airDateMod;
+        }
+
+        return {
+          id: obj.id,
+          airDate: airDateFormatted,
+          airDateBonusLength: airDateModLength,
+          airDateBonusModifier: airDateMod,
+          difficulty: obj.difficulty,
+          title: obj.title,
+          points: points
+        }
+      })
+    // console.log(problemsArr, "-------------problemArr")
+    res.json(modifiedProblemsArr);
 
   } catch (err) {
     console.log(err);

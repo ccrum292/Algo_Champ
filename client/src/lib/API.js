@@ -129,6 +129,14 @@ export default {
       });
     },
 
+    getProblemsForClassDashboard: function(authToken, classId) {
+      return axios.get("/api/problems/dashboard/" + classId, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      });
+    },
+
     updateProblem: function(authToken, classId, problemId, title, description, 
       startingCode, difficulty, displayExampleArr, exampleId, newInputOutputArr, deleteInputOutputArrOfIds, classProblemObj) {
       return axios.put("/api/problems", {
