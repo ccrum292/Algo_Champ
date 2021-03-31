@@ -17,7 +17,7 @@ import Leaderboard from "../../pages/LeaderBoard";
 import Algo from "../../pages/Algo";
 import Students from "../../pages/Students";
 import AdminAlgo from "../../pages/AdminAlgo";
-
+import CreateClass from "../../pages/CreateClass";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,6 +32,7 @@ function App(props) {
   const [user, setUser] = useState(null);
   const [authToken, setAuthToken] = useState(null);
   const [currentClass, setCurrentClass] = useState(null);
+  const [contextReRender, setContextReRender] = useState(false);
 
   useEffect(() => {
     const setUserOnPageLoad = async () => {
@@ -54,8 +55,8 @@ function App(props) {
   }, []);
 
   const value = useMemo(() => ({
-    user, setUser, authToken, setAuthToken, currentClass, setCurrentClass
-  }), [user, setUser, authToken, setAuthToken, currentClass, setCurrentClass]);
+    user, setUser, authToken, setAuthToken, currentClass, setCurrentClass, contextReRender, setContextReRender
+  }), [user, setUser, authToken, setAuthToken, currentClass, setCurrentClass, contextReRender, setContextReRender]);
 
   return (
     <UserAndAuthContext.Provider value={value}>
@@ -74,6 +75,9 @@ function App(props) {
           </Route>
           <Route exact path="/leaderboard">
             {user ? <Leaderboard></Leaderboard> : <Login></Login>}
+          </Route>
+          <Route exact path="/createclass">
+            {user ? <CreateClass></CreateClass> : <Login></Login>}
           </Route>
           <Route exact path="/students">
             {!currentClass ? <Login></Login> : currentClass.ClassUser.admin ? <Students></Students> : <Login></Login>}

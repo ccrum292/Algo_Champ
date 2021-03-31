@@ -58,6 +58,7 @@ export default function Students() {
   const { currentClass, authToken } = useContext(UserAndAuthContext);
   const [joinRequests, setJoinRequests] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [reRender, setReRender] = useState(false);
 
 
   const getData = async () => {
@@ -70,16 +71,18 @@ export default function Students() {
 
   useEffect(() => {
     getData()
-  }, []);
+  }, [currentClass]);
 
   const handleAccept = async e => {
     e.currentTarget.parentElement.remove();
     const res = await API.JoinRequests.adminAcceptJoinRequest(authToken, e.currentTarget.dataset.classid, e.currentTarget.dataset.studentuserid, e.currentTarget.dataset.joinrequestid);
+    setReRender(!reRender)
   }
 
   const handleDecline = async e => {
     e.currentTarget.parentElement.remove();
     const res = await API.JoinRequests.adminDeclineJoinRequest(authToken, e.currentTarget.dataset.classid, e.currentTarget.dataset.joinrequestid);
+    setReRender(!reRender)
   }
 
   return (
@@ -88,7 +91,7 @@ export default function Students() {
           {loading ? <LinearProgress color="secondary" /> : null}
           <Grid container spacing={3}>
             <Grid item xs={12} md={8} lg={9}>
-                <AdminStudentTable setLoading={setLoading} />
+                <AdminStudentTable reRender={reRender} setReRender={setReRender} setLoading={setLoading} />
               {/* <Paper className={tableDivPaper}>
               </Paper> */}
             </Grid>

@@ -71,4 +71,24 @@ classesController.delete('/:classId/:studentId', JWTVerifier, async (req, res) =
   }
 });
 
+
+classesController.post('/', JWTVerifier, async (req, res) => {
+  try {
+    const { name, description, useTrilogyDefault } = req.body;
+    const classData = await db.Class.create({ name, description });
+
+    const newClassUserData = await db.ClassUser.create({
+      admin: true,
+      UserId: req.user.id,
+      ClassId: classData.id
+    });
+
+    res.json([classData, newClassUserData]);
+
+  } catch (err) {
+    console.log(err);
+    res.json(err);
+  }
+});
+
 module.exports = classesController;

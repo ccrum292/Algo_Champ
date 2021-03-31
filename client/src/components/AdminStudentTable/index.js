@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function AdminStudentTable({ setLoading }) {
+export default function AdminStudentTable({ setLoading, reRender, setReRender }) {
   const classes = useStyles();
 
   const { authToken, currentClass } = useContext(UserAndAuthContext);
@@ -56,7 +56,6 @@ export default function AdminStudentTable({ setLoading }) {
   const [modalText, setModalText] = useState("");
   const [deletionId, setDeletionId] = useState(null);
   const [submitMessage, setSubmitMessage] = useState("");
-  const [reRender, setReRender] = useState(false);
 
   const getStudentData = async () => {
     try {
@@ -72,7 +71,7 @@ export default function AdminStudentTable({ setLoading }) {
 
   useEffect(() => {
     getStudentData();
-  }, [reRender]);
+  }, [reRender, currentClass]);
 
 
   const handleStudentDelete = async (e) => {

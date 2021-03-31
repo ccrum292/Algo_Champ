@@ -5,6 +5,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
+    owner: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     score: {
       type: DataTypes.INTEGER,
       defaultValue: 0,

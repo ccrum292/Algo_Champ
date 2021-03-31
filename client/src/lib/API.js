@@ -57,7 +57,19 @@ export default {
           Authorization: `Bearer ${authToken}`,
         }
       });
-    }
+    },
+
+    createClass: function(authToken, name, description, useTrilogyDefault) {
+      return axios.post("/api/classes", {
+        name,
+        description,
+        useTrilogyDefault
+      }, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      });
+    },
   },
 
   JoinRequests: {

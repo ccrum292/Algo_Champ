@@ -120,7 +120,7 @@ export default function AdminAlgo() {
 
   useEffect(() => {
     getProblems();
-  }, [reRender]);
+  }, [reRender, currentClass]);
 
 
 

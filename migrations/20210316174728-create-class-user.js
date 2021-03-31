@@ -9,7 +9,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       admin: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      owner: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       score: {
         type: Sequelize.INTEGER,

@@ -17,8 +17,6 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
 
-
-
 const useStyles = makeStyles((theme) => ({
   icon: {
     marginRight: 4
@@ -48,7 +46,7 @@ export default function UserClass() {
   const [modalOpen, setModalOpen] = useState(false);
   const [classRequestInputVal, setClassRequestInputVal] = useState(null);
   const [submitMessage, setSubmitMessage] = useState("");
-  const { authToken, currentClass, setCurrentClass } = useContext(UserAndAuthContext);
+  const { authToken, currentClass, setCurrentClass, contextReRender } = useContext(UserAndAuthContext);
 
   const userClasses = async (authToken) => {
     const res = await API.Classes.getUserClasses(authToken);
@@ -75,7 +73,7 @@ export default function UserClass() {
     const token = TokenStore.getToken();
     userClasses(token)
 
-  }, []);
+  }, [contextReRender]);
 
   const handleClick = e => {
     e.preventDefault()

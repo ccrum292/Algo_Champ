@@ -22,6 +22,7 @@ module.exports = {
       },{
         admin: true,
         score: 0,
+        owner: true,
         algorithmsCompleted: 0,
         createdAt: new Date(),
         updatedAt: new Date(),

@@ -8,7 +8,7 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import PeopleIcon from '@material-ui/icons/People';
 import CodeIcon from '@material-ui/icons/Code';
 import UserClass from '../../components/UserClass';
-
+import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import clsx from 'clsx';
 
 
@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Navigation() {
   const classes = useStyles();
 
-  const { user, setUser, setAuthToken, currentClass } = useContext(UserAndAuthContext);
+  const { user, setUser, setAuthToken, currentClass, setCurrentClass } = useContext(UserAndAuthContext);
   const [navOpen, setNavOpen] = useState(false);
   const [redirect, setRedirect] = useState(false);
   const handleLogout = e => {
@@ -98,6 +98,7 @@ export default function Navigation() {
     UserStore.clearClassId();
     setUser(null);
     setAuthToken(null);
+    setCurrentClass(null);
     setRedirect(true);
   }
 
@@ -176,11 +177,17 @@ export default function Navigation() {
             </List>
             <Divider />
             <List>
-            <ListItem button onClick={e => handleLogout(e)}>
-              <ListItemIcon>
-                <ExitToAppIcon />
-              </ListItemIcon>
-              <ListItemText primary="Logout" />
+              <ListItem button to="/createclass" component={Link}>
+                <ListItemIcon>
+                  <CreateNewFolderIcon />
+                </ListItemIcon>
+                <ListItemText primary="Create Class" />
+              </ListItem>
+              <ListItem button onClick={e => handleLogout(e)}>
+                <ListItemIcon>
+                  <ExitToAppIcon />
+                </ListItemIcon>
+                <ListItemText primary="Logout" />
               </ListItem>
             </List>
           </>
