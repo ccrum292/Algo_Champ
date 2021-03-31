@@ -113,7 +113,6 @@ problemsController.get('/dashboard/:classId', JWTVerifier, async (req, res) => {
           points: points
         }
       })
-    // console.log(problemsArr, "-------------problemArr")
     res.json(modifiedProblemsArr);
 
   } catch (err) {
@@ -185,8 +184,6 @@ problemsController.put('/', JWTVerifier, async (req, res) => {
       db.Test.bulkCreate(newTestDataArr)
     ]);
 
-    console.log(classProblemUpdateData);
-
     res.json([problemUpdateData, classProblemUpdateData, exampleUpdateData, testDeleteData, testCreateData]);
 
   } catch (err) {
@@ -223,64 +220,5 @@ problemsController.delete('/:classId/:problemId', JWTVerifier, async (req, res) 
     res.json(err);
   }
 });
-
-// Admin accepts joinRequest and deletes
-// problemsController.post('/accept/:classId', JWTVerifier, async (req, res) => {
-//   try {
-//     const classUserData = await db.ClassUser.findOne({
-//       where: {
-//         ClassId: req.params.classId,
-//         UserId: req.user.id,
-//         admin: 1
-//       }
-//     });
-
-//     if (!classUserData) return res.sendStatus(401);
-
-//     const data = await db.ClassUser.create({
-//       ClassId: req.params.classId,
-//       UserId: req.body.studentUserId,
-//     })
-
-//     const deleteRequest = await db.joinRequest.destroy({
-//       where: {
-//         id: req.body.joinRequestId
-//       }
-//     })
-
-//     res.json(data);
-
-//   } catch (err) {
-//     console.log(err);
-//     res.json(err);
-//   }
-// });
-
-// Admin Declines joinRequest and deletes
-// problemsController.post('/decline/:classId', JWTVerifier, async (req, res) => {
-//   try {
-//     const classUserData = await db.ClassUser.findOne({
-//       where: {
-//         ClassId: req.params.classId,
-//         UserId: req.user.id,
-//         admin: 1
-//       }
-//     });
-//     console.log(classUserData);
-//     if (!classUserData) return res.sendStatus(401);
-
-//     const deleteRequest = await db.joinRequest.destroy({
-//       where: {
-//         id: req.body.joinRequestId
-//       }
-//     })
-
-//     res.json(deleteRequest);
-
-//   } catch (err) {
-//     console.log(err);
-//     res.json(err);
-//   }
-// });
 
 module.exports = problemsController;

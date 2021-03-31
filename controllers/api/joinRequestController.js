@@ -98,7 +98,7 @@ joinRequestController.post('/decline/:classId', JWTVerifier, async (req, res) =>
         admin: 1
       }
     });
-    console.log(classUserData);
+
     if (!classUserData) return res.sendStatus(401);
 
     const deleteRequest = await db.joinRequest.destroy({

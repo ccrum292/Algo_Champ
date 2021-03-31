@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
+import { format, parseISO } from "date-fns";
+import UserAndAuthContext from "../../context/AuthContext";
+
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
@@ -10,6 +13,7 @@ import Link from '@material-ui/core/Link';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 import DashboardList from "../../components/DashboardList";
+import SmallLeaderBoard from "../../components/SmallLeaderBoardTable";
 
 
 const drawerWidth = 240;
@@ -29,17 +33,17 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1
   },
   fixedHeight: {
-    height: 240,
+    height: 230,
   },
   tableDiv: {
     height: "100%"
   },
   secondSmallPaper: {
-    marginTop: theme.spacing(2),
+    marginLeft: theme.spacing(2)
   },
   heading1: {
-    marginLeft: theme.spacing(2)
-  }
+    textAlign: "center"
+  },
 }));
 
 export default function Dashboard() {
@@ -49,26 +53,57 @@ export default function Dashboard() {
   const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeight, classes.secondSmallPaper);
   const tableDivPaper = clsx(classes.paper, classes.tableDiv);
 
+  const { user, currentClass } = useContext(UserAndAuthContext);
   const [loading, setLoading] = useState(false);
+
+
+  const greeting = () => {
+    const time = format(new Date(), "H");
+    if(time < 4 || time >= 18) return `Good Evening ${user.name}`;
+    if(time >= 4 && time < 12) return `Good Morning ${user.name}`;
+    if(time >= 12 && time < 18) return `Good Afternoon ${user.name}`;
+  }
 
   return (
         <Container component="main" maxWidth="lg" className={classes.container}>
           <div className={classes.appBarSpacer}></div>
           {loading ? <LinearProgress color="secondary" /> : null}
           <Grid container spacing={3}>
-            <Grid item xs={12} md={8} lg={9}>
-              <DashboardList setLoading={setLoading} />
-            </Grid>
-            <Grid item container justify="space-between"  direction="column" xs={12} md={4} lg={3}>
-              
+            <Grid item container direction="row" xs={12} spacing={3}>
+              <Grid item xs={12} md={6}>
                 <Paper className={fixedHeightPaper}>
+                  <Typography className={classes.heading1} component="h1" variant="h5">
+                    {greeting()}
+                  </Typography>
+                  <Typography className={classes.heading1} component="h1" variant="h6">
+                    you have ...
+                  </Typography>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} md={6}>
+                      <Typography className={classes.heading1} component="h1" variant="h2">
+                        {currentClass ? currentClass.ClassUser.algorithmsCompleted : 0}
+                      </Typography>
+                      <Typography className={classes.heading1} component="h1" variant="h6">
+                        Algorithms Complete
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <Typography className={classes.heading1} component="h1" variant="h2">
+                        {currentClass ? currentClass.ClassUser.score : 0}
+                      </Typography>
+                      <Typography className={classes.heading1} component="h1" variant="h6">
+                        Points
+                      </Typography>
+                    </Grid>
+                  </Grid>
                 </Paper>
-              
-              
-                <Paper className={fixedHeightPaper2}>
-                </Paper>
-
-              
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <SmallLeaderBoard setLoading={setLoading}/>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <DashboardList setLoading={setLoading} />
             </Grid>
           </Grid>
         </Container>

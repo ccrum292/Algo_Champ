@@ -1,10 +1,10 @@
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #2b323d;
+  background-color: #3f51b5;
   outline: 1px solid #4a5568;
 }
 
 ::-webkit-scrollbar-thumb:active{
-  background-color: #191d24;
+  background-color: #303f9f;
 }
 
 ::-webkit-scrollbar {
@@ -17,6 +17,6 @@
 }
  
 ::-webkit-scrollbar-thumb {
-  background-color: #4a5568;
-  outline: 1px solid #000;
+  background-color: #7986cb;
+  outline: 1px solid #3f51b5;
 }

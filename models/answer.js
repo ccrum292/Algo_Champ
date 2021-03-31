@@ -2,7 +2,10 @@
 module.exports = (sequelize, DataTypes) => {
   const Answer = sequelize.define('Answer', {
     codeText: DataTypes.STRING,
-    correctAnswer: DataTypes.BOOLEAN
+    correctAnswer: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    }
   }, {});
   Answer.associate = function(models) {
     Answer.belongsTo(models.User, {

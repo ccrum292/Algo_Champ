@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-import LargeLeaderboard from "../../components/LargeLeaderbaordTable";
+import LargeLeaderBoard from "../../components/LargeLeaderbaordTable";
 
 
 const drawerWidth = 240;
@@ -51,7 +51,7 @@ export default function LeaderBoard() {
           {loading ? <LinearProgress color="secondary" /> : null}
           <Grid container spacing={3}>
             <Grid item xs={12} md={8} lg={12}>
-              <LargeLeaderboard setLoading={setLoading} />
+              <LargeLeaderBoard setLoading={setLoading} />
             </Grid>
           </Grid>
         </Container>

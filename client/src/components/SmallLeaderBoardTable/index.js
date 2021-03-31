@@ -14,9 +14,6 @@ import API from '../../lib/API';
 import UserAndAuthContext from "../../context/AuthContext";
 
 const useStyles = makeStyles(theme => ({
-  table: {
-    minWidth: 650,
-  },
   paperModal: {
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
@@ -49,7 +46,10 @@ const useStyles = makeStyles(theme => ({
   },
   none: {
 
-  }
+  },
+  fixedHeight: {
+    height: 230,
+  },
 }));
 
 
@@ -100,7 +100,7 @@ export default function LargeLeaderBoardTable({ setLoading }) {
 
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer className={classes.fixedHeight} component={Paper}>
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>

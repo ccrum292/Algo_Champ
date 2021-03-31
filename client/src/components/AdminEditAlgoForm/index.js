@@ -22,12 +22,6 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 
-
-
-
-
-
-
 import {UnControlled as CodeMirror} from 'react-codemirror2';
 require('../../lib/codemirrorStyles/codemirror.css');
 require('../../lib/codemirrorStyles/material.css');
@@ -128,8 +122,6 @@ export default function AdminEditAlgoForm (props) {
 
   const handleProblemDelete = async e => {
     e.preventDefault();
-    console.log("delete");
-
     try {
       setLoading(true);
       const deletionData = await API.Problems.deleteProblemFromClass(authToken, currentClass.id, problemId);
@@ -245,7 +237,6 @@ export default function AdminEditAlgoForm (props) {
               shrink: true,
             }}
             onChange={e => {
-              console.log(e.target.value);
               setAirDate(e.target.value)
             }}
             defaultValue={airDate}
