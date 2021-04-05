@@ -1,19 +1,19 @@
 import { useState, useContext } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import UserAndAuthContext from "../../context/AuthContext";
+import TokenStore from "../../lib/TokenStore";
 
-import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import Link from '@material-ui/core/Link';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 import DashboardList from "../../components/DashboardList";
 import SmallLeaderBoard from "../../components/SmallLeaderBoardTable";
+import NoClass from "../../components/NoClass";
 
 
 const drawerWidth = 240;
@@ -68,44 +68,48 @@ export default function Dashboard() {
         <Container component="main" maxWidth="lg" className={classes.container}>
           <div className={classes.appBarSpacer}></div>
           {loading ? <LinearProgress color="secondary" /> : null}
-          <Grid container spacing={3}>
-            <Grid item container direction="row" xs={12} spacing={3}>
-              <Grid item xs={12} md={6}>
-                <Paper className={fixedHeightPaper}>
-                  <Typography className={classes.heading1} component="h1" variant="h5">
-                    {greeting()}
-                  </Typography>
-                  <Typography className={classes.heading1} component="h1" variant="h6">
-                    you have ...
-                  </Typography>
-                  <Grid container spacing={3}>
-                    <Grid item xs={12} md={6}>
-                      <Typography className={classes.heading1} component="h1" variant="h2">
-                        {currentClass ? currentClass.ClassUser.algorithmsCompleted : 0}
-                      </Typography>
-                      <Typography className={classes.heading1} component="h1" variant="h6">
-                        Algorithms Complete
-                      </Typography>
+          {currentClass ? 
+            <Grid container spacing={3}>
+              <Grid item container direction="row" xs={12} spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <Paper className={fixedHeightPaper}>
+                    <Typography className={classes.heading1} component="h1" variant="h5">
+                      {greeting()}
+                    </Typography>
+                    <Typography className={classes.heading1} component="h1" variant="h6">
+                      you have ...
+                    </Typography>
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} md={6}>
+                        <Typography className={classes.heading1} component="h1" variant="h2">
+                          {currentClass ? currentClass.ClassUser.algorithmsCompleted : 0}
+                        </Typography>
+                        <Typography className={classes.heading1} component="h1" variant="h6">
+                          Algorithms Complete
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <Typography className={classes.heading1} component="h1" variant="h2">
+                          {currentClass ? currentClass.ClassUser.score : 0}
+                        </Typography>
+                        <Typography className={classes.heading1} component="h1" variant="h6">
+                          Points
+                        </Typography>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={12} md={6}>
-                      <Typography className={classes.heading1} component="h1" variant="h2">
-                        {currentClass ? currentClass.ClassUser.score : 0}
-                      </Typography>
-                      <Typography className={classes.heading1} component="h1" variant="h6">
-                        Points
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </Paper>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <SmallLeaderBoard setLoading={setLoading}/>
+                </Grid>
               </Grid>
-              <Grid item xs={12} md={6}>
-                <SmallLeaderBoard setLoading={setLoading}/>
+              <Grid item xs={12}>
+                <DashboardList setLoading={setLoading} />
               </Grid>
-            </Grid>
-            <Grid item xs={12}>
-              <DashboardList setLoading={setLoading} />
-            </Grid>
-          </Grid>
+            </Grid> :
+            <NoClass/>
+
+          }
         </Container>
   );
 }

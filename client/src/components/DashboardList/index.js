@@ -64,11 +64,19 @@ export default function DashboardList({ setLoading }) {
 
   const getData = async () => {
     if(!currentClass) return console.log("not there")
-    setLoading(true);
-    const res = await API.Problems.getProblemsForClassDashboard(authToken, currentClass.id);
-    const sortedByAirDate = sortForAirDate(res.data);
-    setProblems(sortedByAirDate);
-    setLoading(false);
+
+    try {
+      setLoading(true);
+      const res = await API.Problems.getProblemsForClassDashboard(authToken, currentClass.id);
+      const sortedByAirDate = sortForAirDate(res.data);
+      setProblems(sortedByAirDate);
+      setLoading(false);
+
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+    }
+
   };
 
   useEffect(() => {
