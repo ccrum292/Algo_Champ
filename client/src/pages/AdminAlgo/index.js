@@ -154,31 +154,33 @@ export default function AdminAlgo() {
                     ></NewAlgoForm>
                   </AccordionDetails>
                 </Accordion>
-                {problemsArr ? problemsArr.map(obj => (
-                  <Accordion key={obj.id} expanded={expanded === `panel${obj.id}`} 
-                    onChange={handleAccordionChange(`panel${obj.id}`)}>
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls={`panel${obj.id}-content`}
-                      id={`panel${obj.id}-header`}
-                    >
-                      <Typography className={classes.heading}>{obj.title}</Typography>
-                      <Typography className={classes.secondaryHeading}>
-                        Air Date: {format(parseISO(obj.ClassProblem.airDate), "MM-dd-yyyy pp")}
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <AdminEditAlgoForm modalOpen={modalOpen} setModalOpen={setModalOpen} title={obj.title}
-                        setModalTitle={setModalTitle} setReRender={setReRender} reRender={reRender}
-                        setModalText={setModalText} setExpanded={setExpanded} setLoading={setLoading}
-                        difficulty={obj.difficulty} airDate={obj.ClassProblem.airDate} 
-                        airDateBonusModifier={obj.ClassProblem.airDateBonusModifier}
-                        airDateBonusLength={obj.ClassProblem.airDateBonusLength} directions={obj.description} 
-                        starterCode={obj.startingCode} example={obj.Examples[0].displayValue}
-                        tests={obj.Tests} problemId={obj.id} exampleId={obj.Examples[0].id} />
-                    </AccordionDetails>
-                  </Accordion> 
-                ))
+                {problemsArr ? problemsArr.map(obj => {
+                  if (!obj) return
+                  return (
+                    <Accordion key={obj.id} expanded={expanded === `panel${obj.id}`} 
+                      onChange={handleAccordionChange(`panel${obj.id}`)}>
+                      <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls={`panel${obj.id}-content`}
+                        id={`panel${obj.id}-header`}
+                      >
+                        <Typography className={classes.heading}>{obj.title}</Typography>
+                        <Typography className={classes.secondaryHeading}>
+                          Air Date: {format(parseISO(obj.ClassProblem.airDate), "MM-dd-yyyy pp")}
+                        </Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <AdminEditAlgoForm modalOpen={modalOpen} setModalOpen={setModalOpen} title={obj.title}
+                          setModalTitle={setModalTitle} setReRender={setReRender} reRender={reRender}
+                          setModalText={setModalText} setExpanded={setExpanded} setLoading={setLoading}
+                          difficulty={obj.difficulty} airDate={obj.ClassProblem.airDate} 
+                          airDateBonusModifier={obj.ClassProblem.airDateBonusModifier}
+                          airDateBonusLength={obj.ClassProblem.airDateBonusLength} directions={obj.description} 
+                          starterCode={obj.startingCode} example={obj.Examples[0] ? obj.Examples[0].displayValue : ""}
+                          tests={obj.Tests} problemId={obj.id} exampleId={obj.Examples[0] ? obj.Examples[0].id : ""} />
+                      </AccordionDetails>
+                    </Accordion> 
+                  )})
                   :
                   <Typography color="secondary" variant="h6" >{errorMsg}</Typography>
                 }

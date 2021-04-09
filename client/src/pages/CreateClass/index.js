@@ -84,7 +84,8 @@ export default function CreateClass() {
       setRedirect(true);
 
     } catch (e) {
-      setLoginMessage("Incorrect Email or Password")
+      setLoginMessage("That name is already taken.");
+      setLoading(false);
     }
 
 

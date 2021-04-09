@@ -4,25 +4,25 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
       return queryInterface.bulkInsert('Tests', [{
         input: "hello",
-        inputType: "string",
+        inputTypeJSON: false,
         output: "HELLO",
-        outputType: "string",
+        outputTypeJSON: false,
         createdAt: new Date(),
         updatedAt: new Date(),
         ProblemId: 1
       },{
         input: "HELLO",
-        inputType: "string",
+        inputTypeJSON: false,
         output: "hello",
-        outputType: "string",
+        outputTypeJSON: false,
         createdAt: new Date(),
         updatedAt: new Date(),
         ProblemId: 2
       },{
         input: "hello",
-        inputType: "string",
+        inputTypeJSON: false,
         output: "5",
-        outputType: "number",
+        outputTypeJSON: false,
         createdAt: new Date(),
         updatedAt: new Date(),
         ProblemId: 3

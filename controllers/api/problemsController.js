@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 
 const { format, parseISO } = require("date-fns");
 const timeConvert = require("../../lib/timeConvert");
+const isJsonStr = require("../../lib/isJsonStr"); 
 
 // Admin Creates a Problem with examples and tests
 problemsController.post('/', JWTVerifier, async (req, res) => {
@@ -42,10 +43,20 @@ problemsController.post('/', JWTVerifier, async (req, res) => {
     });
     
     const newTestDataArr = testDataArr.map(val => {
-      return { ...val, 
+      // console.log(val.input, val.output)
+      // if (isJsonStr(val.input)) val.inputTypeJSON = true;
+      // else val.inputTypeJSON = false;
+      
+      // if (isJsonStr(val.output)) val.outputTypeJSON = true;
+      // else val.outputTypeJSON = false;
+      
+      return { 
+        ...val,
         ProblemId: problemCreationData.id
-      }
+      };
     });
+
+    console.log(newTestDataArr);
 
     let [exampleCreationData, testsCreationData] = await Promise.all(
       [

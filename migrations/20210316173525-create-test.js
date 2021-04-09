@@ -11,14 +11,14 @@ module.exports = {
       input: {
         type: Sequelize.STRING
       },
-      inputType: {
-        type: Sequelize.STRING
+      inputTypeJSON: {
+        type: Sequelize.BOOLEAN
       },
       output: {
         type: Sequelize.STRING
       },
-      outputType: {
-        type: Sequelize.STRING
+      outputTypeJSON: {
+        type: Sequelize.BOOLEAN
       },
       createdAt: {
         allowNull: false,

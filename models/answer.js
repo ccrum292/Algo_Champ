@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     Answer.belongsTo(models.Problem, {
       foreignKey: {
         allowNull: false
-      }
+      }, 
     });
   };
   return Answer;

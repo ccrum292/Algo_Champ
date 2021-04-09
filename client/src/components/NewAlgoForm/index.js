@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import API from '../../lib/API';
 import UserAndAuthContext from '../../context/AuthContext';
+import isJsonStr from "../../lib/isJsonStr";
 
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -21,12 +22,6 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
-
-
-
-
-
-
 
 import {UnControlled as CodeMirror} from 'react-codemirror2';
 require('../../lib/codemirrorStyles/codemirror.css');
@@ -91,7 +86,7 @@ export default function NewAlgoForm ({ setModalOpen, setModalTitle, setExpanded,
     console.log("submit");
     setErrorMsg("");
 
-    if(!currentClass.id || !title || !directions || starterCode === "Your Starter Code Here *"
+    if (!currentClass.id || !title || !directions || starterCode === "Your Starter Code Here *"
       || !inputAndOutputArr[0] || !airDate || !difficulty) {
         setErrorMsg("Please complete all required fields denoted by the *")
         return
@@ -138,7 +133,18 @@ export default function NewAlgoForm ({ setModalOpen, setModalTitle, setExpanded,
     setDifficulty(e.target.value);
   }
 
+  const checkIfTestIsProperFormat = val => {
+    if (!isJsonStr(val)) return false;
+    if (Object.prototype.toString.call(JSON.parse(val)) !== '[object Array]') return false;
+    return true;
+  };
+
   const handleInputOutputSave = () => {
+    
+    if (!checkIfTestIsProperFormat(input)) {
+      setErrorMsg("Please enter your input arguments as an array of arguments, thank you.")
+    }
+    
     const val =  {
       input: input,
       output: output

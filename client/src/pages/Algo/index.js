@@ -57,26 +57,25 @@ export default function Algo() {
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeightConsole);
   const tableDivPaper = clsx(classes.paper, classes.tableDiv, classes.secondSmallPaper);
-
-  let params = useParams();
-  // console.log("params",params);
-
+  
   let options = {
     mode: 'javascript',
     theme: 'material',
     lineNumbers: true,
   }
-
+  
   let value = '// Hello World';
-
+  
+  let { id: pId } = useParams();
   const [codeMirrorValue, setCodeMirrorValue] = useState(value);
+  const [problemId, setProblemId] = useState(pId);
   const { user, authToken } = useContext(UserAndAuthContext);
 
   const handleSubmit = async e => {
     e.preventDefault();
 
-    const data = await API.Answers.addAnswer(authToken, codeMirrorValue, user.id, 1);
-    console.log(data);
+    const data = await API.Answers.addAnswer(authToken, codeMirrorValue, user.id, problemId);
+    console.log(data.data);
 
   }
 
@@ -101,13 +100,9 @@ export default function Algo() {
                 <Button size="large" variant="contained" color="primary" onClick={e => handleSubmit(e)}>Submit</Button>
               </Paper>
             </Grid>
-            <Grid item xs={12} md={5} lg={4}>
-              
+            <Grid item xs={12} md={5} lg={4}>             
                 <Paper className={fixedHeightPaper}>
                 </Paper>
-              
-
-              
             </Grid>
           </Grid>
         </Container>
