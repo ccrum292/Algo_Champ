@@ -140,17 +140,20 @@ export default function NewAlgoForm ({ setModalOpen, setModalTitle, setExpanded,
   };
 
   const handleInputOutputSave = () => {
-    
     if (!checkIfTestIsProperFormat(input)) {
       setErrorMsg("Please enter your input arguments as an array of arguments, thank you.")
+      setInput("Test Case Input *");
+      setOutput("Test Case Output *");  
+      return
     }
     
     const val =  {
       input: input,
       output: output
     }
-
+    
     setInputAndOutputArr([...inputAndOutputArr, val])
+    setErrorMsg("");
     setInput("Test Case Input *");
     setOutput("Test Case Output *");
   };

@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import { format, parseISO } from "date-fns";
+import { format, parseISO, parse } from "date-fns";
 
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
@@ -173,7 +173,7 @@ export default function AdminAlgo() {
                         <AdminEditAlgoForm modalOpen={modalOpen} setModalOpen={setModalOpen} title={obj.title}
                           setModalTitle={setModalTitle} setReRender={setReRender} reRender={reRender}
                           setModalText={setModalText} setExpanded={setExpanded} setLoading={setLoading}
-                          difficulty={obj.difficulty} airDate={obj.ClassProblem.airDate} 
+                          difficulty={obj.difficulty} airDate={obj.ClassProblem.airDate} airDateTest={parseISO(obj.ClassProblem.airDate)}
                           airDateBonusModifier={obj.ClassProblem.airDateBonusModifier}
                           airDateBonusLength={obj.ClassProblem.airDateBonusLength} directions={obj.description} 
                           starterCode={obj.startingCode} example={obj.Examples[0] ? obj.Examples[0].displayValue : ""}

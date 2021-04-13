@@ -42,14 +42,7 @@ problemsController.post('/', JWTVerifier, async (req, res) => {
       }
     });
     
-    const newTestDataArr = testDataArr.map(val => {
-      // console.log(val.input, val.output)
-      // if (isJsonStr(val.input)) val.inputTypeJSON = true;
-      // else val.inputTypeJSON = false;
-      
-      // if (isJsonStr(val.output)) val.outputTypeJSON = true;
-      // else val.outputTypeJSON = false;
-      
+    const newTestDataArr = testDataArr.map(val => {      
       return { 
         ...val,
         ProblemId: problemCreationData.id
@@ -123,7 +116,8 @@ problemsController.get('/dashboard/:classId', JWTVerifier, async (req, res) => {
           title: obj.title,
           points: points
         }
-      })
+      });
+
     res.json(modifiedProblemsArr);
 
   } catch (err) {
@@ -135,7 +129,9 @@ problemsController.get('/dashboard/:classId', JWTVerifier, async (req, res) => {
 
 problemsController.put('/', JWTVerifier, async (req, res) => {
   try {
-    const {title, description, startingCode, classId, problemId, difficulty, displayExampleArr, exampleId, newInputOutputArr, deleteInputOutputArrOfIds, classProblemObj} = req.body;
+    const { title, description, startingCode, classId, problemId, 
+      difficulty, displayExampleArr, exampleId, newInputOutputArr, 
+      deleteInputOutputArrOfIds, classProblemObj } = req.body;
     
     const classUserData = await db.ClassUser.findOne({
       where: {
@@ -154,7 +150,8 @@ problemsController.put('/', JWTVerifier, async (req, res) => {
 
     const {airDate, airDateBonusModifier, airDateBonusLength} = classProblemObj;
 
-    let [problemUpdateData, classProblemUpdateData, exampleUpdateData, testDeleteData, testCreateData] = await Promise.all([
+    let [problemUpdateData, classProblemUpdateData, exampleUpdateData, 
+      testDeleteData, testCreateData] = await Promise.all([
       db.Problem.update({
         title,
         description,
@@ -195,7 +192,8 @@ problemsController.put('/', JWTVerifier, async (req, res) => {
       db.Test.bulkCreate(newTestDataArr)
     ]);
 
-    res.json([problemUpdateData, classProblemUpdateData, exampleUpdateData, testDeleteData, testCreateData]);
+    res.json([problemUpdateData, classProblemUpdateData, exampleUpdateData, 
+      testDeleteData, testCreateData]);
 
   } catch (err) {
     console.log(err);

@@ -1,7 +1,9 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { format, parseISO, formatISO, parseJSON } from "date-fns";
 import API from '../../lib/API';
 import UserAndAuthContext from '../../context/AuthContext';
+import isJsonStr from "../../lib/isJsonStr";
 
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -70,7 +72,7 @@ export default function AdminEditAlgoForm (props) {
   const [problemId, setProblemId] = useState(props.problemId);
   const [title, setTitle] = useState(props.title);
   const [difficulty, setDifficulty] = useState(props.difficulty);
-  const [airDate, setAirDate] = useState(props.airDate.split(".")[0]);
+  const [airDate, setAirDate] = useState(format(parseISO(props.airDate), "yyyy-MM-dd'T'HH:mm:ss"));
   const [airDateBonusModifier, setAirDateBonusModifier] = useState(props.airDateBonusModifier);
   const [bonusDuration, setBonusDuration] = useState(props.airDateBonusLength);
   const [directions, setDirections] = useState(props.directions);
@@ -84,7 +86,6 @@ export default function AdminEditAlgoForm (props) {
   const [output, setOutput] = useState("Test Case Output *");
   const [errorMsg, setErrorMsg] = useState("");
   const [deleteButtonToggle, setDeleteButtonToggle] = useState(false);
-
 
   const handleNewAlgorithmFormSubmit = async e => {
     e.preventDefault();
@@ -141,7 +142,20 @@ export default function AdminEditAlgoForm (props) {
     setDifficulty(e.target.value);
   }
 
+  const checkIfTestIsProperFormat = val => {
+    if (!isJsonStr(val)) return false;
+    if (Object.prototype.toString.call(JSON.parse(val)) !== '[object Array]') return false;
+    return true;
+  };
+
   const handleInputOutputSave = () => {
+    if (!checkIfTestIsProperFormat(input)) {
+      setErrorMsg("Please enter your input arguments as an array of arguments, thank you.")
+      setInput("Test Case Input *");
+      setOutput("Test Case Output *");  
+      return
+    }
+
     const val =  {
       input: input,
       output: output,
@@ -149,6 +163,7 @@ export default function AdminEditAlgoForm (props) {
 
     setNewInputOutputArr([...newInputOutputArr, val]);
     setInputAndOutputArr([...inputAndOutputArr, val]);
+    setErrorMsg("");
     setInput("Test Case Input *");
     setOutput("Test Case Output *");
   };
