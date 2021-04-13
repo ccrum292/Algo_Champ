@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import clsx from 'clsx';
 import "./style.css";
@@ -9,6 +9,9 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button'
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
 
 import {UnControlled as CodeMirror} from 'react-codemirror2';
 import UserAndAuthContext from '../../context/AuthContext';
@@ -33,15 +36,14 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     overflow: 'auto',
     flexDirection: 'column',
-    flexGrow: 1
   },
   fixedHeight: {
     height: 480,
   },
   fixedHeightConsole: {
-    height: 240,
+    height: 360,
   },
-  tableDiv: {
+  grow: {
     flexGrow: 1,
   },
   secondSmallPaper: {
@@ -49,6 +51,9 @@ const useStyles = makeStyles((theme) => ({
   },
   fullCodeMirror: {
     height: "100%"
+  },
+  mb1: {
+    marginBottom: theme.spacing(1)
   }
 }));
 
@@ -56,52 +61,162 @@ export default function Algo() {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeightConsole);
-  const tableDivPaper = clsx(classes.paper, classes.tableDiv, classes.secondSmallPaper);
+  const tableDivPaper = clsx(classes.paper, classes.grow, classes.secondSmallPaper);
   
   let options = {
     mode: 'javascript',
     theme: 'material',
     lineNumbers: true,
   }
-  
-  let value = '// Hello World';
-  
+    
   let { id: pId } = useParams();
-  const [codeMirrorValue, setCodeMirrorValue] = useState(value);
+  const [codeMirrorValue, setCodeMirrorValue] = useState("// Hello World");
   const [problemId, setProblemId] = useState(pId);
-  const { user, authToken } = useContext(UserAndAuthContext);
+  const [loading, setLoading] = useState(false);
+  const [correctAnswer, setCorrectAnswer] = useState(false);
+  const [viewOtherAnswers, setViewOtherAnswers] = useState(false);
+  const [title, setTitle] = useState(null);
+  const [description, setDescription] = useState("");
+  const [example, setExample] = useState("");
+  const [msg, setMsg] = useState("");
+  const { user, authToken, currentClass } = useContext(UserAndAuthContext);
+
+
+  const getData = async () => {
+    try {
+      setMsg("");
+      setLoading(true);
+      const data = await API.Problems.getSingleProblem(authToken, currentClass.id, problemId);
+      console.log(data);
+      setLoading(false);
+
+      if (!data.data[0]) {
+        setTitle("Currently Unavailable");
+        setCodeMirrorValue("// Hello World");
+        setDescription("");
+        setExample("");
+        return
+      }
+
+      const {title, startingCode, description} = data.data[0]
+      setTitle(title);
+      setCodeMirrorValue(startingCode);
+      setDescription(description);
+      setExample(data.data[0].Examples[0].displayValue)
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getData()
+
+  }, [currentClass]);
+
 
   const handleSubmit = async e => {
     e.preventDefault();
-
-    const data = await API.Answers.addAnswer(authToken, codeMirrorValue, user.id, problemId);
-    console.log(data.data);
-
+    try {
+      if (title === "Currently Unavailable" && description === "") return setMsg("Submit Denied")
+      setMsg("");
+      setLoading(true);
+      const data = await API.Answers.addAnswer(authToken, codeMirrorValue, user.id, problemId);
+      console.log(data);
+      if (data.data.correctAnswer) {
+        setCorrectAnswer(true);
+        setViewOtherAnswers(true);
+        setMsg("Correct, well done!")
+      } else {
+        setMsg("Incorrect, please try again.")
+      }
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
   }
 
-  
   
   return (
         <Container component="main" maxWidth="lg" className={classes.container}>
           <div className={classes.appBarSpacer}></div>
+          {loading ? <LinearProgress color="secondary" /> : null}
           <Grid container spacing={3} className={classes.outerGrid}>
             <Grid container justify="space-between"  direction="column" item xs={12} md={7} lg={8}>
-              <Paper className={fixedHeightPaper2}>
+              <Paper className={fixedHeightPaper}>
                 <CodeMirror
                   className={classes.fullCodeMirror}
-                  value={value}
+                  value={codeMirrorValue}
                   options={options}
                   onChange={(editor, data, value) => {
                     setCodeMirrorValue(value);
                   }}
                 />
               </Paper>
-              <Paper className={tableDivPaper}>
-                <Button size="large" variant="contained" color="primary" onClick={e => handleSubmit(e)}>Submit</Button>
-              </Paper>
+              {viewOtherAnswers ? 
+                <Paper className={tableDivPaper}>
+                  <Grid className={classes.grow} container justify="space-between" direction="column">
+                    <Grid item>
+                      <Typography component="h1" variant="h4" gutterBottom>
+                        Other Solutions
+                      </Typography>
+                      <Divider />
+                      </Grid>
+                    <Grid item container direction="column" spacing={2}>
+                      {/* <Grid item>
+                        <Typography component="h1" variant="h4" gutterBottom>
+                          {title}
+                        </Typography>
+                        <Divider />
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          {description}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          {example}
+                        </Typography>
+                      </Grid> */}
+                    </Grid>
+                  </Grid>
+                </Paper> : null
+              }
             </Grid>
             <Grid item xs={12} md={5} lg={4}>             
                 <Paper className={fixedHeightPaper}>
+                  <Grid className={classes.grow} container justify="space-between" direction="column">
+                    <Grid item container direction="column" spacing={2}>
+                      <Grid item>
+                        <Typography component="h1" variant="h4" gutterBottom>
+                          {title}
+                        </Typography>
+                        <Divider />
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          {description}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          {example}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Grid item>
+                      {msg[0] ? 
+                        <Typography color="secondary" className={classes.mb1} component="h1" variant="h5">
+                          {msg}
+                        </Typography>: null
+                      }
+
+                      <Button fullWidth size="large" variant="contained" color="primary" onClick={e => handleSubmit(e)}>Submit</Button>
+                    </Grid>
+
+                  </Grid>
                 </Paper>
             </Grid>
           </Grid>

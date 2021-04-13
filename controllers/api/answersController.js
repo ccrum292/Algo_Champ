@@ -28,7 +28,7 @@ answersController.post('/', JWTVerifier, async (req, res) => {
 
     const data = await db.Answer.create({ codeText, correctAnswer, UserId, ProblemId });
     
-    res.json([data, inputOutput]);
+    res.json(data);
     
   } catch (err) {
     console.log(err);

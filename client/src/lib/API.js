@@ -176,6 +176,14 @@ export default {
           Authorization: `Bearer ${authToken}`,
         }
       });
+    },
+
+    getSingleProblem: function(authToken, classId, problemId) {
+      return axios.get(`/api/problems/${classId}/${problemId}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      });
     }
 
   }

@@ -230,4 +230,34 @@ problemsController.delete('/:classId/:problemId', JWTVerifier, async (req, res) 
   }
 });
 
+problemsController.get('/:classId/:problemId', JWTVerifier, async (req, res) => {
+  try {
+    const classUserData = await db.ClassUser.findOne({
+      where: {
+        ClassId: req.params.classId,
+        UserId: req.user.id,
+      }
+    });
+
+    if (!classUserData) return res.sendStatus(401);
+
+    const classData = await db.Class.findByPk(req.params.classId)
+
+    const problemsArr = await classData.getProblems({
+      where: {
+        id: req.params.problemId
+      },
+      include: [{
+        model: db.Example
+      }]
+    });
+    
+    res.json(problemsArr);
+    
+  } catch (err) {
+    console.log(err);
+    res.json(err);
+  }
+});
+
 module.exports = problemsController;
