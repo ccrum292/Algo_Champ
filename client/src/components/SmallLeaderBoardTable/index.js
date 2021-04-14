@@ -65,19 +65,19 @@ export default function LargeLeaderBoardTable({ setLoading }) {
     try {
       setLoading(true);
       const studentData = await API.Classes.getAllUsersForClass(authToken, currentClass.id);
+      const sortForScoreAndFilterOutAdmin = studentData.data.filter(student => !student.admin)
+        .sort((a, b) => {
+          let comparison = 0;
+    
+          if (a.score > b.score) {
+            comparison = -1;
+          } else if (a.score < b.score) {
+            comparison = 1;
+          }
+          return comparison;
+        });
 
-      const sortForScore = studentData.data.sort((a, b) => {
-        let comparison = 0;
-  
-        if (a.score > b.score) {
-          comparison = -1;
-        } else if (a.score < b.score) {
-          comparison = 1;
-        }
-        return comparison;
-      });
-
-      setStudents(sortForScore);
+      setStudents(sortForScoreAndFilterOutAdmin);
       setLoading(false);
     } catch (err) {
       console.log(err);

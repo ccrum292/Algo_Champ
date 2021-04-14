@@ -7,6 +7,7 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import PeopleIcon from '@material-ui/icons/People';
 import CodeIcon from '@material-ui/icons/Code';
+import DoneIcon from '@material-ui/icons/Done';
 import UserClass from '../../components/UserClass';
 import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import clsx from 'clsx';
@@ -157,13 +158,19 @@ export default function Navigation() {
                 </ListItemIcon>
                 <ListItemText primary="Leader Board" />
               </ListItem>
+              <ListItem button to="/completed" component={Link}>
+                <ListItemIcon>
+                  <DoneIcon />
+                </ListItemIcon>
+                <ListItemText primary="Completed Algos" />
+              </ListItem>
               {!currentClass ? null : currentClass.ClassUser.admin ? 
               <>
-              <ListItem button to="/students" component={Link}>
+              <ListItem button to="/members" component={Link}>
                 <ListItemIcon>
                   <PeopleIcon />
                 </ListItemIcon>
-                <ListItemText primary="Students" />
+                <ListItemText primary="Members" />
               </ListItem>
               <ListItem button to="/adminalgo" component={Link}>
                 <ListItemIcon>

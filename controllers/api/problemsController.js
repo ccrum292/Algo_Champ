@@ -93,7 +93,21 @@ problemsController.get('/dashboard/:classId', JWTVerifier, async (req, res) => {
 
     const problemsArr = await classData.getProblems();
 
-    const modifiedProblemsArr = problemsArr.filter(obj => timeConvert(obj.ClassProblem.airDate).remainderSeconds > 0)
+    let answersData = await Promise.all(problemsArr.map(async obj => {
+      const data = await obj.getAnswers({
+        where: {
+          UserId: req.user.id,
+          correctAnswer: true
+        }
+      });
+
+      return data;
+    }));
+
+    const filteredAnswersData = answersData.filter(val => val[0]).map(val => val[0].ProblemId);
+
+    const modifiedProblemsArr = problemsArr.filter(obj => filteredAnswersData.indexOf(obj.id) === -1)
+      .filter(obj => timeConvert(obj.ClassProblem.airDate).remainderSeconds > 0)
       .map(obj => {
 
         const timeData = timeConvert(obj.ClassProblem.airDate)

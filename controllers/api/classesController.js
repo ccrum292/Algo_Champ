@@ -23,7 +23,6 @@ classesController.get('/:classId', JWTVerifier, async (req, res) => {
     const classData = await db.Class.findByPk(req.params.classId);
 
     const students = await classData.getUsers();
-    
     const noPasswordStudentsData = students.map(({id, name, email, ClassUser}) => {
       return {
         id,
@@ -31,6 +30,8 @@ classesController.get('/:classId', JWTVerifier, async (req, res) => {
         email,
         score: ClassUser.score,
         algorithmsCompleted: ClassUser.algorithmsCompleted,
+        admin: ClassUser.admin,
+        owner: ClassUser.owner
       }
     });
 
@@ -79,6 +80,7 @@ classesController.post('/', JWTVerifier, async (req, res) => {
 
     const newClassUserData = await db.ClassUser.create({
       admin: true,
+      owner: true,
       UserId: req.user.id,
       ClassId: classData.id
     });

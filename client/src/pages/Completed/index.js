@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Algo() {
+export default function Completed() {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeightConsole);
@@ -86,6 +86,7 @@ export default function Algo() {
       setMsg("");
       setLoading(true);
       const data = await API.Problems.getSingleProblem(authToken, currentClass.id, problemId);
+      console.log(data);
       setLoading(false);
 
       if (!data.data[0]) {
@@ -120,6 +121,7 @@ export default function Algo() {
       setMsg("");
       setLoading(true);
       const data = await API.Answers.addAnswer(authToken, codeMirrorValue, user.id, problemId, currentClass.id);
+      console.log(data);
       if (data.data.correctAnswer) {
         setCorrectAnswer(true);
         setViewOtherAnswers(true);

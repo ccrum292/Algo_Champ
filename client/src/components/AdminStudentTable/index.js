@@ -86,7 +86,12 @@ export default function AdminStudentTable({ setLoading, reRender, setReRender })
     } catch (err) {
       console.log(err);
     }
+  }
 
+  const typeOfMember = (admin, owner) => {
+    if (!admin) return "Student";
+    if (admin && !owner) return "Admin";
+    else return "Owner Admin";
   }
 
   return (
@@ -99,11 +104,12 @@ export default function AdminStudentTable({ setLoading, reRender, setReRender })
             <TableCell className={classes.tableCell} align="right">Email</TableCell>
             <TableCell className={classes.tableCell} align="right">Algorithms Completed</TableCell>
             <TableCell className={classes.tableCell} align="right">Score</TableCell>
+            <TableCell className={classes.tableCell} align="right">Member Status</TableCell>
             <TableCell className={classes.tableCell} align="right">Remove</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {students.map(({id, name, email, score, algorithmsCompleted}, i) => (
+          {students.map(({id, name, email, score, algorithmsCompleted, admin, owner}, i) => (
             <TableRow key={id}>
               <TableCell className={classes.tableCell}>{i + 1}</TableCell>
               <TableCell className={classes.tableCell} align="left">
@@ -112,6 +118,7 @@ export default function AdminStudentTable({ setLoading, reRender, setReRender })
               <TableCell className={classes.tableCell} align="right">{email}</TableCell>
               <TableCell className={classes.tableCell} align="right">{algorithmsCompleted}</TableCell>
               <TableCell className={classes.tableCell} align="right">{score}</TableCell>
+              <TableCell className={classes.tableCell} align="right">{typeOfMember(admin, owner)}</TableCell>
               <TableCell className={classes.tableCell} align="right">
                 <IconButton data-id={id} data-name={name} onClick={e => {
                   setModalText(e.currentTarget.dataset.name);

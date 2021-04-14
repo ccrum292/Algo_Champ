@@ -15,9 +15,10 @@ import Welcome from "../../pages/Welcome";
 import Dashboard from "../../pages/Dashboard";
 import Leaderboard from "../../pages/LeaderBoard";
 import Algo from "../../pages/Algo";
-import Students from "../../pages/Students";
+import Members from "../../pages/Members";
 import AdminAlgo from "../../pages/AdminAlgo";
 import CreateClass from "../../pages/CreateClass";
+import Completed from "../../pages/Completed";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -79,8 +80,11 @@ function App(props) {
           <Route exact path="/createclass">
             {user ? <CreateClass></CreateClass> : <Login></Login>}
           </Route>
-          <Route exact path="/students">
-            {!currentClass ? <Login></Login> : currentClass.ClassUser.admin ? <Students></Students> : <Login></Login>}
+          <Route exact path="/completed">
+            {user ? <Completed></Completed> : <Login></Login>}
+          </Route>
+          <Route exact path="/members">
+            {!currentClass ? <Login></Login> : currentClass.ClassUser.admin ? <Members></Members> : <Login></Login>}
           </Route>
           <Route exact path="/adminalgo">
             {!currentClass ? <Login></Login> : currentClass.ClassUser.admin ? <AdminAlgo></AdminAlgo> : <Login></Login>}

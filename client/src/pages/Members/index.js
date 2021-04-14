@@ -92,8 +92,6 @@ export default function Students() {
           <Grid container spacing={3}>
             <Grid item xs={12} md={8} lg={9}>
                 <AdminStudentTable reRender={reRender} setReRender={setReRender} setLoading={setLoading} />
-              {/* <Paper className={tableDivPaper}>
-              </Paper> */}
             </Grid>
             <Grid item container justify="space-between"  direction="column" xs={12} md={4} lg={3}>
                 <Paper className={classes.paper}>
