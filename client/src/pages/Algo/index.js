@@ -121,12 +121,16 @@ export default function Algo() {
       if (title === "Currently Unavailable" && description === "") return setMsg("Submit Denied")
       setMsg("");
       setLoading(true);
-      const data = await API.Answers.addAnswer(authToken, codeMirrorValue, user.id, problemId);
+      const data = await API.Answers.addAnswer(authToken, codeMirrorValue, user.id, problemId, currentClass.id);
       console.log(data);
       if (data.data.correctAnswer) {
         setCorrectAnswer(true);
         setViewOtherAnswers(true);
+        currentClass.ClassUser.algorithmsCompleted = currentClass.ClassUser.algorithmsCompleted + 1;
+        currentClass.ClassUser.score = data.data.newScore;
         setMsg("Correct, well done!")
+      } else if(data.data === "You have already Completed this Algorithm.") {
+        setMsg("You have already Completed this Algorithm.")
       } else {
         setMsg("Incorrect, please try again.")
       }

@@ -20,11 +20,12 @@ export default {
   },
 
   Answers: {
-    addAnswer: function(authToken, codeMirrorValue, userId, problemId) {
+    addAnswer: function(authToken, codeMirrorValue, userId, problemId, classId) {
       return axios.post("/api/answers", {
         codeText: codeMirrorValue,
         UserId: userId,
-        ProblemId: problemId
+        ProblemId: problemId,
+        classId: classId
       },
       {
         headers: {

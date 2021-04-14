@@ -77,8 +77,8 @@ export default function NewAlgoForm ({ setModalOpen, setModalTitle, setExpanded,
   const [starterCode, setStarterCode] = useState("Your Starter Code Here *");
   const [example, setExample] = useState(null);
   const [inputAndOutputArr, setInputAndOutputArr] = useState([]);
-  const [input, setInput] = useState("Test Case Input *");
-  const [output, setOutput] = useState("Test Case Output *");
+  const [input, setInput] = useState("Test Case Input * enter as an array of arguments");
+  const [output, setOutput] = useState("Test Case Output * enter exact output");
   const [errorMsg, setErrorMsg] = useState("");
 
   const handleNewAlgorithmFormSubmit = async e => {
@@ -116,8 +116,8 @@ export default function NewAlgoForm ({ setModalOpen, setModalTitle, setExpanded,
       setDirections(null);
       setExample(null);
       setStarterCode("Your Starter Code Here *")
-      setInput("Test Case Input *")
-      setOutput("Test Case Output *")
+      setInput("Test Case Input * enter as an array of arguments")
+      setOutput("Test Case Output * enter exact output")
       setInputAndOutputArr([])
 
       e.target.reset();
@@ -142,8 +142,8 @@ export default function NewAlgoForm ({ setModalOpen, setModalTitle, setExpanded,
   const handleInputOutputSave = () => {
     if (!checkIfTestIsProperFormat(input)) {
       setErrorMsg("Please enter your input arguments as an array of arguments, thank you.")
-      setInput("Test Case Input *");
-      setOutput("Test Case Output *");  
+      setInput("Test Case Input * enter as an array of arguments");
+      setOutput("Test Case Output * enter exact output");  
       return
     }
     
@@ -154,8 +154,8 @@ export default function NewAlgoForm ({ setModalOpen, setModalTitle, setExpanded,
     
     setInputAndOutputArr([...inputAndOutputArr, val])
     setErrorMsg("");
-    setInput("Test Case Input *");
-    setOutput("Test Case Output *");
+    setInput("Test Case Input * enter as an array of arguments");
+    setOutput("Test Case Output * enter exact output");
   };
 
   const handleInputOutputDelete = e => {
