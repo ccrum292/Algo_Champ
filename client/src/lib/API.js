@@ -32,6 +32,23 @@ export default {
           Authorization: `Bearer ${authToken}`,
         }
       })
+    },
+
+    getTenCorrectAnswers: function(authToken, problemId) {
+      return axios.get("/api/answers/" + problemId, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      })
+    },
+
+    // ! not sure if this will be used
+    getMyAnswer: function(authToken, problemId) {
+      return axios.get(`/api/answers/my/${problemId}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      })
     }
   },
 

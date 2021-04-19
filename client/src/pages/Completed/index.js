@@ -117,7 +117,6 @@ export default function Completed() {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      if (title === "Currently Unavailable" && description === "") return setMsg("Submit Denied")
       setMsg("");
       setLoading(true);
       const data = await API.Answers.addAnswer(authToken, codeMirrorValue, user.id, problemId, currentClass.id);
@@ -142,87 +141,68 @@ export default function Completed() {
 
   
   return (
-        <Container component="main" maxWidth="lg" className={classes.container}>
-          <div className={classes.appBarSpacer}></div>
-          {loading ? <LinearProgress color="secondary" /> : null}
-          <Grid container spacing={3} className={classes.outerGrid}>
-            <Grid container justify="space-between"  direction="column" item xs={12} md={7} lg={8}>
-              <Paper className={fixedHeightPaper}>
-                <CodeMirror
-                  className={classes.fullCodeMirror}
-                  value={codeMirrorValue}
-                  options={options}
-                  onChange={(editor, data, value) => {
-                    setCodeMirrorValue(value);
-                  }}
-                />
-              </Paper>
-              {viewOtherAnswers ? 
-                <Paper className={tableDivPaper}>
-                  <Grid className={classes.grow} container justify="space-between" direction="column">
-                    <Grid item>
-                      <Typography component="h1" variant="h4" gutterBottom>
-                        Other Solutions
-                      </Typography>
-                      <Divider />
-                      </Grid>
-                    <Grid item container direction="column" spacing={2}>
-                      {/* <Grid item>
-                        <Typography component="h1" variant="h4" gutterBottom>
-                          {title}
-                        </Typography>
-                        <Divider />
-                      </Grid>
-                      <Grid item>
-                        <Typography variant="body1" gutterBottom>
-                          {description}
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        <Typography variant="body1" gutterBottom>
-                          {example}
-                        </Typography>
-                      </Grid> */}
-                    </Grid>
-                  </Grid>
-                </Paper> : null
-              }
-            </Grid>
-            <Grid item xs={12} md={5} lg={4}>             
-                <Paper className={fixedHeightPaper}>
-                  <Grid className={classes.grow} container justify="space-between" direction="column">
-                    <Grid item container direction="column" spacing={2}>
-                      <Grid item>
-                        <Typography component="h1" variant="h4" gutterBottom>
-                          {title}
-                        </Typography>
-                        <Divider />
-                      </Grid>
-                      <Grid item>
-                        <Typography variant="body1" gutterBottom>
-                          {description}
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        <Typography variant="body1" gutterBottom>
-                          {example}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    <Grid item>
-                      {msg[0] ? 
-                        <Typography color="secondary" className={classes.mb1} component="h1" variant="h5">
-                          {msg}
-                        </Typography>: null
-                      }
-
-                      <Button fullWidth size="large" variant="contained" color="primary" onClick={e => handleSubmit(e)}>Submit</Button>
-                    </Grid>
-
-                  </Grid>
-                </Paper>
+    <Container component="main" maxWidth="lg" className={classes.container}>
+    <div className={classes.appBarSpacer}></div>
+    {loading ? <LinearProgress color="secondary" /> : null}
+    <Grid container spacing={3} className={classes.outerGrid}>
+      <Grid item xs={12} md={5} lg={3}>             
+        <Paper className={fixedHeightPaper}>
+          <Grid className={classes.grow} container justify="space-between" direction="column">
+            <Grid item container direction="column" spacing={2}>
+              <Grid item>
+                <Typography component="h1" variant="h5" gutterBottom>
+                  Completed Algorithms
+                </Typography>
+                <Divider />
+              </Grid>
+              <Grid item>
+                <Typography variant="body1" gutterBottom>
+                  {description}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant="body1" gutterBottom>
+                  {example}
+                </Typography>
+              </Grid>
             </Grid>
           </Grid>
-        </Container>
-  );
+        </Paper>
+      </Grid>
+      <Grid container spacing={3} direction="column" item xs={12} md={7} lg={9}>
+        <Grid item>
+          <Paper className={fixedHeightPaper}>
+            <CodeMirror
+              className={classes.fullCodeMirror}
+              value={codeMirrorValue}
+              options={options}
+              onChange={(editor, data, value) => {
+                setCodeMirrorValue(value);
+              }}
+            />
+          </Paper>
+        </Grid>
+        {viewOtherAnswers ? 
+          <Grid item className={classes.grow} container spacing={3} direction="column">
+            <Grid item>
+              <Typography component="h1" variant="h4" gutterBottom>
+                Other Solutions
+              </Typography>
+              <Divider />
+            </Grid>
+            <Grid item container direction="column" spacing={2}>
+              {/* {
+                correctAnswers.map(obj => (
+                  <Grid item>
+                    <CorrectAnswer name={obj.User.name} codeMirrorValue={obj.codeText}/>
+                  </Grid>
+                ))
+              } */}
+            </Grid>
+          </Grid> : null
+        }
+      </Grid>
+    </Grid>
+  </Container>
+);
 }

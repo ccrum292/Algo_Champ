@@ -59,57 +59,62 @@ export default function Dashboard() {
 
   const greeting = () => {
     const time = format(new Date(), "H");
-    if(time < 4 || time >= 18) return `Good Evening ${user.name}`;
-    if(time >= 4 && time < 12) return `Good Morning ${user.name}`;
-    if(time >= 12 && time < 18) return `Good Afternoon ${user.name}`;
+    if (time < 4 || time >= 18) return `Good Evening ${user.name}`;
+    if (time >= 4 && time < 12) return `Good Morning ${user.name}`;
+    if (time >= 12 && time < 18) return `Good Afternoon ${user.name}`;
   }
 
   return (
-        <Container component="main" maxWidth="lg" className={classes.container}>
-          <div className={classes.appBarSpacer}></div>
-          {loading ? <LinearProgress color="secondary" /> : null}
-          {currentClass ? 
-            <Grid container spacing={3}>
-              <Grid item container direction="row" xs={12} spacing={3}>
-                <Grid item xs={12} md={6}>
-                  <Paper className={fixedHeightPaper}>
-                    <Typography className={classes.heading1} component="h1" variant="h5">
-                      {greeting()}
+    <Container component="main" maxWidth="lg" className={classes.container}>
+      <div className={classes.appBarSpacer}></div>
+      {loading ? <LinearProgress color="secondary" /> : null}
+      {currentClass ?
+        <Grid container spacing={3}>
+          <Grid item container direction="row" xs={12} spacing={3}>
+            <Grid item xs={12} md={6}>
+              <Paper className={fixedHeightPaper}>
+                <Typography className={classes.heading1} component="h1" variant="h5">
+                  {greeting()}
+                </Typography>
+                <Typography className={classes.heading1} component="h1" variant="h6">
+                  you have ...
+                </Typography>
+                <Grid container spacing={1}>
+                  <Grid item xs={12} md={5}>
+                    <Typography className={classes.heading1} component="h1" variant="h2">
+                      {currentClass ? currentClass.ClassUser.algorithmsCompleted : 0}
                     </Typography>
                     <Typography className={classes.heading1} component="h1" variant="h6">
-                      you have ...
+                      Algorithms Complete
                     </Typography>
-                    <Grid container spacing={3}>
-                      <Grid item xs={12} md={6}>
-                        <Typography className={classes.heading1} component="h1" variant="h2">
-                          {currentClass ? currentClass.ClassUser.algorithmsCompleted : 0}
+                  </Grid>
+                  <Grid item container justify="center" alignItems="center" xs={12} md={2}>
+                    <Typography className={classes.heading1} component="h1" variant="h4">
+                      {"&"}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={5}>
+                    <Typography className={classes.heading1} component="h1" variant="h2">
+                      {currentClass ? currentClass.ClassUser.score : 0}
+                    </Typography>
+                    <Typography className={classes.heading1} component="h1" variant="h6">
+                      Points
                         </Typography>
-                        <Typography className={classes.heading1} component="h1" variant="h6">
-                          Algorithms Complete
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <Typography className={classes.heading1} component="h1" variant="h2">
-                          {currentClass ? currentClass.ClassUser.score : 0}
-                        </Typography>
-                        <Typography className={classes.heading1} component="h1" variant="h6">
-                          Points
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </Paper>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <SmallLeaderBoard setLoading={setLoading}/>
-                </Grid>
-              </Grid>
-              <Grid item xs={12}>
-                <DashboardList setLoading={setLoading} />
-              </Grid>
-            </Grid> :
-            <NoClass/>
+              </Paper>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <SmallLeaderBoard setLoading={setLoading} />
+            </Grid>
+          </Grid>
+          <Grid item xs={12}>
+            <DashboardList setLoading={setLoading} />
+          </Grid>
+        </Grid> :
+        <NoClass />
 
-          }
-        </Container>
+      }
+    </Container>
   );
 }

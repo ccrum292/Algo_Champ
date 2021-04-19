@@ -19,7 +19,7 @@ answersController.post('/', JWTVerifier, async (req, res) => {
       }
     });
     if (!classUserData) return res.sendStatus(401);
-    
+
     const problemData = await db.Problem.findByPk(ProblemId);
 
     const previousAnswers = await problemData.getAnswers({
@@ -28,7 +28,7 @@ answersController.post('/', JWTVerifier, async (req, res) => {
         correctAnswer: true
       }
     });
-  
+
     if (previousAnswers[0]) return res.send("You have already Completed this Algorithm.")
 
     const testsData = await problemData.getTests();
@@ -39,14 +39,14 @@ answersController.post('/', JWTVerifier, async (req, res) => {
         output: isJsonStr(test.output) ? JSON.parse(test.output) : test.output
       };
     });
-    
+
     const eval = evaluateFunc(codeText, inputOutput);
     console.log(eval);
     const evalFilter = eval.filter(val => !val)
     const correctAnswer = evalFilter[0] === false ? false : true;
 
     const data = await db.Answer.create({ codeText, correctAnswer, UserId, ProblemId });
-    
+
     if (!correctAnswer) return res.json(data);
 
     const classProblem = await db.ClassProblem.findOne({
@@ -63,7 +63,7 @@ answersController.post('/', JWTVerifier, async (req, res) => {
         return classProblem.airDateBonusModifier * problemData.difficulty + classUserData.score;
       }
 
-      return problemData.difficulty
+      return problemData.difficulty + classUserData.score;
     };
 
     const newScore = score();
@@ -82,7 +82,45 @@ answersController.post('/', JWTVerifier, async (req, res) => {
       correctAnswer: correctAnswer,
       newScore
     });
-    
+
+  } catch (err) {
+    console.log(err);
+    res.json(err);
+  }
+});
+
+answersController.get('/:problemId', JWTVerifier, async (req, res) => {
+  try {
+    const answerData = await db.Answer.findAll({
+      where: {
+        correctAnswer: true,
+        ProblemId: req.params.problemId
+      },
+      include: [{
+        model: db.User
+      }],
+      limit: 10
+    })
+
+    res.json(answerData);
+  } catch (err) {
+    console.log(err);
+    res.json(err);
+  }
+});
+
+// ! not sure if this will be used
+answersController.get('/my/:problemId', JWTVerifier, async (req, res) => {
+  try {
+    const answerData = await db.Answer.findAll({
+      where: {
+        correctAnswer: true,
+        ProblemId: req.params.problemId,
+        UserId: req.user.id
+      }
+    })
+
+    res.json(answerData);
   } catch (err) {
     console.log(err);
     res.json(err);
