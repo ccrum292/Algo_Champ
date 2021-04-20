@@ -88,7 +88,9 @@ export default function Login() {
       setRedirect(true);
 
     } catch (e) {
-      setLoginMessage("Incorrect Email or Password")
+      console.log(e);
+      setLoginMessage("Incorrect Email or Password");
+      setLoading(false);
     }
 
 

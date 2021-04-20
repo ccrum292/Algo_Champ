@@ -7,7 +7,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     email: {
       type: DataTypes.STRING,
-      unique: true
+      unique: true,
+      validate: {
+        isEmail: true
+      }
     },
     password: DataTypes.STRING
   }, {});
@@ -20,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
     });
     User.hasMany(models.joinRequest, {
       onDelete: "cascade"
+    });
+    User.belongsToMany(models.Problem, {
+      through: models.Answer
     });
   };
   return User;

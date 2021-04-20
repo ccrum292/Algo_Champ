@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     correctAnswer: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
-    }
+    },
+    points: DataTypes.INTEGER
   }, {});
   Answer.associate = function(models) {
     Answer.belongsTo(models.User, {

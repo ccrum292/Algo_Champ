@@ -18,7 +18,16 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {});
   ClassProblem.associate = function(models) {
-    // associations can be defined here
+    ClassProblem.belongsTo(models.Problem, {
+      foreignKey: {
+        allowNull: false
+      }
+    });
+    ClassProblem.belongsTo(models.Class, {
+      foreignKey: {
+        allowNull: false
+      }
+    });
   };
   return ClassProblem;
 };

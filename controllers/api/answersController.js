@@ -45,9 +45,11 @@ answersController.post('/', JWTVerifier, async (req, res) => {
     const evalFilter = eval.filter(val => !val)
     const correctAnswer = evalFilter[0] === false ? false : true;
 
-    const data = await db.Answer.create({ codeText, correctAnswer, UserId, ProblemId });
-
-    if (!correctAnswer) return res.json(data);
+    
+    if (!correctAnswer) {
+      const data = await db.Answer.create({ codeText, correctAnswer, UserId, ProblemId, points: 0 });
+      return res.json(data);
+    } 
 
     const classProblem = await db.ClassProblem.findOne({
       where: {
@@ -60,27 +62,38 @@ answersController.post('/', JWTVerifier, async (req, res) => {
 
     const score = () => {
       if (convert.minutes < classProblem.airDateBonusLength && convert.minutes > 0) {
-        return classProblem.airDateBonusModifier * problemData.difficulty + classUserData.score;
+        return {
+          total: classProblem.airDateBonusModifier * problemData.difficulty + classUserData.score,
+          single: classProblem.airDateBonusModifier * problemData.difficulty
+        };
       }
 
-      return problemData.difficulty + classUserData.score;
+      return {
+        total: problemData.difficulty + classUserData.score,
+        single: problemData.difficulty
+      };
     };
 
     const newScore = score();
 
-    const updateData = await db.ClassUser.update({
-      score: newScore,
-      algorithmsCompleted: classUserData.algorithmsCompleted + 1
-    }, {
-      where: {
-        ClassId: classId,
-        UserId: req.user.id
-      }
-    });
+    let [updateData, newAnswer] = await Promise.all(
+      [
+        db.ClassUser.update({
+          score: newScore.total,
+          algorithmsCompleted: classUserData.algorithmsCompleted + 1
+        }, {
+          where: {
+            ClassId: classId,
+            UserId: req.user.id
+          }
+        }),
+        db.Answer.create({ codeText, correctAnswer, UserId, ProblemId, points: newScore.single })
+      ]
+    )
 
     res.json({
       correctAnswer: correctAnswer,
-      newScore
+      newScore: newScore.total
     });
 
   } catch (err) {
@@ -109,18 +122,27 @@ answersController.get('/:problemId', JWTVerifier, async (req, res) => {
   }
 });
 
-// ! not sure if this will be used
-answersController.get('/my/:problemId', JWTVerifier, async (req, res) => {
+answersController.get('/all/:classId', JWTVerifier, async (req, res) => {
   try {
-    const answerData = await db.Answer.findAll({
+    const data = await db.ClassProblem.findAll({
       where: {
-        correctAnswer: true,
-        ProblemId: req.params.problemId,
-        UserId: req.user.id
-      }
-    })
+        ClassId: req.params.classId
+      },
+      include: [{
+        model: db.Problem,
+        include: [{
+          model: db.Answer,
+          where: {
+            correctAnswer: true,
+            UserId: req.user.id
+          }
+        }]
+      }]
+    });
+    
+    const filtered = data.filter(obj => obj.Problem && obj.Problem.Answers)
 
-    res.json(answerData);
+    res.json(filtered);
   } catch (err) {
     console.log(err);
     res.json(err);

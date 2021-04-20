@@ -17,6 +17,9 @@ module.exports = (sequelize, DataTypes) => {
     });
     Class.hasMany(models.joinRequest, {
       onDelete: "cascade"
+    });
+    Class.hasMany(models.ClassProblem, {
+      
     })
   };
   return Class;

@@ -181,11 +181,14 @@ export default function Algo() {
                   </Grid>
                   <Grid item container direction="column" spacing={2}>
                     {
-                      correctAnswers.map(obj => (
-                        <Grid item>
-                          <CorrectAnswer name={obj.User.name} codeMirrorValue={obj.codeText}/>
-                        </Grid>
-                      ))
+                      correctAnswers.map(obj => {
+                        if(obj.User.id === user.id) return null;  
+                        return (
+                          <Grid item>
+                            <CorrectAnswer name={obj.User.name} codeMirrorValue={obj.codeText}/>
+                          </Grid>
+                        )
+                      })
                     }
                   </Grid>
                 </Grid> : null

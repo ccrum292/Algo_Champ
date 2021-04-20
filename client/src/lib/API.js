@@ -42,9 +42,8 @@ export default {
       })
     },
 
-    // ! not sure if this will be used
-    getMyAnswer: function(authToken, problemId) {
-      return axios.get(`/api/answers/my/${problemId}`, {
+    getMyAnswers: function(authToken, classId) {
+      return axios.get(`/api/answers/all/${classId}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         }

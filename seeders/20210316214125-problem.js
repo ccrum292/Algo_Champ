@@ -25,6 +25,22 @@ module.exports = {
         difficulty: 3,
         createdAt: new Date(),
         updatedAt: new Date(),
+      },
+      {
+        title: "Sum",
+        description: "Write a function that takes in two numbers and returns their sum.",
+        startingCode: "const sum = (num1, num2) => ",
+        difficulty: 2,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        title: "Multiply By Two",
+        description: "Write a function that takes in a numbers and returns the value of it multiplied by 2.",
+        startingCode: "const multiplyByTwo = (num1, num2) => ",
+        difficulty: 2,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       }], {});
 
   },

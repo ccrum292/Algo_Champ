@@ -31,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
     Problem.hasMany(models.Test, {
       onDelete: "cascade"
     });
+    Problem.belongsToMany(models.User, {
+      through: models.Answer
+    });
+    Problem.hasMany(models.ClassProblem, {});
   };
   return Problem;
 };
