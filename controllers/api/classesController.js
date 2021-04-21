@@ -72,6 +72,140 @@ classesController.delete('/:classId/:studentId', JWTVerifier, async (req, res) =
   }
 });
 
+// owner deletes an admin
+classesController.delete('/admin/:classId/:studentId', JWTVerifier, async (req, res) => {
+  try {
+    const classUserData = await db.ClassUser.findOne({
+      where: {
+        ClassId: req.params.classId,
+        UserId: req.user.id,
+        admin: 1,
+        owner: 1
+      }
+    });
+
+    if (!classUserData) return res.sendStatus(401);
+
+    const removeUserFromClass = await db.ClassUser.destroy({
+      where: {
+        UserId: req.params.studentId,
+        ClassId: req.params.classId,
+      }
+    })
+
+    res.json(removeUserFromClass);
+
+  } catch (err) {
+    console.log(err);
+    res.json(err);
+  }
+});
+
+// create admin
+classesController.put('/admin/:classId/:studentId', JWTVerifier, async (req, res) => {
+  try {
+    console.log("hit")
+    const classUserData = await db.ClassUser.findOne({
+      where: {
+        ClassId: req.params.classId,
+        UserId: req.user.id,
+        admin: true
+      }
+    });
+    console.log("--------------", classUserData);
+    if (!classUserData) return res.sendStatus(401);
+
+    const createAdmin = await db.ClassUser.update({
+      admin: true
+    }, {
+      where: {
+        UserId: req.params.studentId,
+        ClassId: req.params.classId,
+      }
+    })
+
+    res.json(createAdmin);
+
+  } catch (err) {
+    console.log(err);
+    res.json(err);
+  }
+});
+
+// downgrade an admin
+classesController.put('/admin/downgrade/:classId/:studentId', JWTVerifier, async (req, res) => {
+  try {
+    const classUserData = await db.ClassUser.findOne({
+      where: {
+        ClassId: req.params.classId,
+        UserId: req.user.id,
+        admin: 1,
+        owner: 1
+      }
+    });
+
+    if (!classUserData) return res.sendStatus(401);
+
+    const createAdmin = await db.ClassUser.update({
+      admin: false
+    }, {
+      where: {
+        UserId: req.params.studentId,
+        ClassId: req.params.classId,
+      }
+    })
+
+    res.json(createAdmin);
+
+  } catch (err) {
+    console.log(err);
+    res.json(err);
+  }
+});
+
+// transfer ownership
+classesController.put('/admin/owner/:classId/:studentId', JWTVerifier, async (req, res) => {
+  try {
+    const classUserData = await db.ClassUser.findOne({
+      where: {
+        ClassId: req.params.classId,
+        UserId: req.user.id,
+        admin: 1,
+        owner: 1
+      }
+    });
+
+    if (!classUserData) return res.sendStatus(401);
+
+    let [updateToOwner, downGrade] = await Promise.all([
+      db.ClassUser.update({
+        admin: true,
+        owner: true
+      }, {
+        where: {
+          UserId: req.params.studentId,
+          ClassId: req.params.classId,
+        }
+      }),
+      db.ClassUser.update({
+        owner: false
+      }, {
+        where: {
+          UserId: req.user.id,
+          ClassId: req.params.classId
+        }
+      })
+    ]);
+
+
+    res.json([updateToOwner, downGrade]);
+
+  } catch (err) {
+    console.log(err);
+    res.json(err);
+  }
+});
+
 
 classesController.post('/', JWTVerifier, async (req, res) => {
   try {

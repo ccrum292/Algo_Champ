@@ -76,6 +76,38 @@ export default {
       });
     },
 
+    removeAdminFromClass: function(authToken, classId, studentId) {
+      return axios.delete(`/api/classes/admin/${classId}/${studentId}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      });
+    },
+
+    createAdminForClass: function(authToken, classId, studentId) {
+      return axios.put(`/api/classes/admin/${classId}/${studentId}`, {}, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      });
+    },
+
+    downgradeAdmin: function(authToken, classId, studentId) {
+      return axios.put(`/api/classes/admin/downgrade/${classId}/${studentId}`, {}, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      });
+    },
+
+    transferClassOwnership: function(authToken, classId, studentId) {
+      return axios.put(`/api/classes/admin/owner/${classId}/${studentId}`, {}, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      });
+    },
+
     createClass: function(authToken, name, description, useTrilogyDefault) {
       return axios.post("/api/classes", {
         name,

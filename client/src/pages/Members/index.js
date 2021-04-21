@@ -21,8 +21,6 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import AdminStudentTable from '../../components/AdminStudentTable';
 
 
-const drawerWidth = 240;
-
 const useStyles = makeStyles((theme) => ({
   appBarSpacer: theme.mixins.toolbar,
   container: {
@@ -52,8 +50,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Students() {
   const classes = useStyles();
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-  const tableDivPaper = clsx(classes.paper, classes.tableDiv);
 
   const { currentClass, authToken } = useContext(UserAndAuthContext);
   const [joinRequests, setJoinRequests] = useState(null);
@@ -105,7 +101,10 @@ export default function Students() {
                         return (
                           <ListItem key={val.id}>
                             <ListItemText primary={val.userEmail} />
-                            <IconButton id="hello" onClick={handleAccept} data-classid={val.ClassId} data-joinrequestid={val.id} data-studentuserid={val.UserId}>
+                            <IconButton id="hello" onClick={handleAccept}
+                              data-classid={val.ClassId}
+                              data-joinrequestid={val.id} 
+                              data-studentuserid={val.UserId}>
                               <AddCircleOutlineIcon />
                             </IconButton>
                             <IconButton onClick={handleDecline} data-classid={val.ClassId} data-joinrequestid={val.id}>
