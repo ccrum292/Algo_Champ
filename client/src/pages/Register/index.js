@@ -56,13 +56,31 @@ export default function Register() {
   const [userMessage, setUserMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async e => {
-    e.preventDefault()
-    if (password !== secondPassword) {
-      return setUserMessage(`Passwords must match.`);
+  const validateEmail = emailAddress => {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(emailAddress).toLowerCase());
+}
+
+  const checkPassword = () => {
+    if(password !== secondPassword) {
+      setUserMessage(`Passwords must match.`)
+      return false;
+    };
+    if(password.length > 25 || password.length < 8) {
+      setUserMessage(`Passwords must be between 8 and 25 characters long.`)
+      return false;
+    }
+    if(!validateEmail(email)){
+      setUserMessage(`Improper Email Address.`)
+      return false;
     }
     setUserMessage("");
+    return true;
+  };
 
+  const handleSubmit = async e => {
+    e.preventDefault()
+    if (!checkPassword()) return
     let name = `${firstName.trim()} ${lastName.trim()}`;
     setLoading(true);
     const res = await API.Users.create(name, email, password);

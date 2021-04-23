@@ -8,6 +8,8 @@ const { format, parseISO } = require("date-fns");
 const timeConvert = require("../../lib/timeConvert");
 const isJsonStr = require("../../lib/isJsonStr"); 
 
+const starterProblems = require("../../lib/starterProblems");
+
 // Admin Creates a Problem with examples and tests
 problemsController.post('/', JWTVerifier, async (req, res) => {
   try {
@@ -49,7 +51,7 @@ problemsController.post('/', JWTVerifier, async (req, res) => {
       };
     });
 
-    console.log(newTestDataArr);
+    console.log(testDataArr);
 
     let [exampleCreationData, testsCreationData] = await Promise.all(
       [
@@ -274,4 +276,68 @@ problemsController.get('/:classId/:problemId', JWTVerifier, async (req, res) => 
   }
 });
 
+// bulk create starter problems
+// problemsController.post('/bulk', JWTVerifier, async (req, res) => {
+//   try {
+//     const {title, description, startingCode, classId, difficulty, displayExampleArr, testDataArr, classProblemObj} = req.body;
+//     const classUserData = await db.ClassUser.findOne({
+//       where: {
+//         ClassId: classId,
+//         UserId: req.user.id,
+//         admin: 1
+//       }
+//     });
+
+//     if (!classUserData) return res.sendStatus(401);
+
+//     // need class id
+//     let bulkCreateData = await Promise.all(starterProblems.map(async ({ problem, classProblem, example, tests }) => {
+//       const problemCreationData = await db.Problem.create({
+//         title: problem.title,
+//         description: problem.description,
+//         startingCode: problem.startingCode,
+//         difficulty: problem.difficulty
+//       });
+
+//       const newDisplayExampleArr = example.map(val => {
+//         return {
+//           displayValue: val,
+//           ProblemId: problemCreationData.id
+//         }
+//       });
+      
+//       const newTestDataArr = tests.map(val => {      
+//         return { 
+//           ...val,
+//           ProblemId: problemCreationData.id
+//         };
+//       });
+
+//       let [classProblemData, exampleCreationData, testsCreationData] = await Promise.all(
+//         [
+//           db.ClassProblem.create({
+//             ...classProblem,
+//             ClassId: classId,
+//             ProblemId: problemCreationData.id
+//           }),
+//           db.Example.bulkCreate(newDisplayExampleArr), 
+//           db.Test.bulkCreate(newTestDataArr)
+//         ]);
+  
+//     }));
+
+
+
+
+
+//     console.log(bulkCreateData);
+
+
+//     res.json([classProblemData, problemCreationData, exampleCreationData, testsCreationData]);
+    
+//   } catch (err) {
+//     console.log(err);
+//     res.json(err);
+//   }
+// });
 module.exports = problemsController;

@@ -90,12 +90,10 @@ export default function Completed() {
       setMsg("");
       setLoading(true);
       const data = await API.Answers.getMyAnswers(authToken, currentClass.id);
-      console.log(data.data);
       setAnswerData(data.data);
       setCurrentProblem(data.data[0]);
       setProblemId(data.data[0].ProblemId);
       const otherAnswersData = await API.Answers.getTenCorrectAnswers(authToken, data.data[0].ProblemId)
-      console.log(otherAnswersData);
       setOtherAnswerDataLg([otherAnswersData.data])
       setCurrentOtherAnswersData(otherAnswersData.data);
       setLoading(false);
@@ -119,7 +117,6 @@ export default function Completed() {
     setCurrentProblem(newProblem[0]);
 
     const filterForNewId = otherAnswerDataLg.filter(arr => arr[0].ProblemId === newId);
-    console.log(filterForNewId);
     if (filterForNewId[0]) {
       setCurrentOtherAnswersData(filterForNewId[0]);
       return;

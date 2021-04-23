@@ -3,6 +3,7 @@ const classesController = require('express').Router();
 const db = require('../../models');
 const { JWTVerifier } = require('../../lib/passport');
 const jwt = require('jsonwebtoken');
+const starterProblems = require("../../lib/starterProblems");
 
 classesController.get('/', JWTVerifier, async (req, res) => {
   try {
@@ -212,12 +213,97 @@ classesController.post('/', JWTVerifier, async (req, res) => {
     const { name, description, useTrilogyDefault } = req.body;
     const classData = await db.Class.create({ name, description });
 
+    if (useTrilogyDefault) {
+      let [newClassUserData, bulkCreateData] = await Promise.all([
+        db.ClassUser.create({
+          admin: true,
+          owner: true,
+          UserId: req.user.id,
+          ClassId: classData.id
+        }),
+        Promise.all(starterProblems.map(async ({ problem, classProblem, example, tests }) => {
+          const problemCreationData = await db.Problem.create({
+            title: problem.title,
+            description: problem.description,
+            startingCode: problem.startingCode,
+            difficulty: problem.difficulty
+          });
+    
+          const newDisplayExampleArr = example.map(val => {
+            return {
+              displayValue: val.displayValue,
+              ProblemId: problemCreationData.id
+            }
+          });
+          
+          const newTestDataArr = tests.map(val => {      
+            return { 
+              ...val,
+              ProblemId: problemCreationData.id
+            };
+          });
+    
+          let [classProblemData, exampleCreationData, testsCreationData] = await Promise.all(
+            [
+              db.ClassProblem.create({
+                ...classProblem,
+                ClassId: classData.id,
+                ProblemId: problemCreationData.id
+              }),
+              db.Example.bulkCreate(newDisplayExampleArr), 
+              db.Test.bulkCreate(newTestDataArr)
+            ]);
+      
+        }))
+      ])
+
+      return res.json([classData, newClassUserData, bulkCreateData]);
+    }
+
+
+
     const newClassUserData = await db.ClassUser.create({
       admin: true,
       owner: true,
       UserId: req.user.id,
       ClassId: classData.id
     });
+
+    // let bulkCreateData = await Promise.all(starterProblems.map(async ({ problem, classProblem, example, tests }) => {
+    //   const problemCreationData = await db.Problem.create({
+    //     title: problem.title,
+    //     description: problem.description,
+    //     startingCode: problem.startingCode,
+    //     difficulty: problem.difficulty
+    //   });
+
+    //   const newDisplayExampleArr = example.map(val => {
+    //     return {
+    //       displayValue: val,
+    //       ProblemId: classData.id
+    //     }
+    //   });
+      
+    //   const newTestDataArr = tests.map(val => {      
+    //     return { 
+    //       ...val,
+    //       ProblemId: classData.id
+    //     };
+    //   });
+
+    //   let [classProblemData, exampleCreationData, testsCreationData] = await Promise.all(
+    //     [
+    //       db.ClassProblem.create({
+    //         ...classProblem,
+    //         ClassId: classId,
+    //         ProblemId: classData.id
+    //       }),
+    //       db.Example.bulkCreate(newDisplayExampleArr), 
+    //       db.Test.bulkCreate(newTestDataArr)
+    //     ]);
+  
+    // }));
+
 
     res.json([classData, newClassUserData]);
 

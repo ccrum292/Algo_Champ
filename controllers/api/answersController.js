@@ -110,7 +110,8 @@ answersController.get('/:problemId', JWTVerifier, async (req, res) => {
         ProblemId: req.params.problemId
       },
       include: [{
-        model: db.User
+        model: db.User,
+        attributes: ["id", "name", "email"]
       }],
       limit: 10
     })

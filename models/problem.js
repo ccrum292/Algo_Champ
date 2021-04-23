@@ -3,7 +3,6 @@ module.exports = (sequelize, DataTypes) => {
   const Problem = sequelize.define('Problem', {
     title: {
       type: DataTypes.STRING,
-      unique: true
     },
     description: {
       type: DataTypes.STRING,
