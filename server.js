@@ -38,6 +38,7 @@ app.use(require("./controllers"));
 
 //-- React catch-all ---------------------------------------------------------
 app.get("*", (req, res) => {
+  console.log(path.join(__dirname, "./client/build/index.html"), "./client/build/index.html")
   res.sendFile(path.join(__dirname, "./client/build/index.html"));
 });
 
