@@ -21,9 +21,7 @@
     "uneval": "^0.1.2"
   },
   "scripts": {
-    "install": "yarn run install:client && yarn run install:server",
-    "install:client": "cd client && yarn",
-    "install:server": "yarn",
+    "install": "cd client && yarn",
     "build": "cd client && yarn build",
     "start": "node server.js",
     "client:dev": "cd client && yarn start",
