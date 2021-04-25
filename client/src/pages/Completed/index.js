@@ -200,6 +200,7 @@ export default function Completed() {
               </Grid>
               <Grid item>
                 <CodeMirror
+                  autoCursor={false}
                   className={classes.fullCodeMirror}
                   value={currentProblem ? currentProblem.Problem.Answers[0].codeText: "// Hello"}
                   options={options}
@@ -232,6 +233,7 @@ export default function Completed() {
                         </Grid>
                         <Grid item>
                           <CodeMirror
+                            autoCursor={false}
                             className={classes.fullCodeMirror}
                             value={obj.codeText}
                             options={options}

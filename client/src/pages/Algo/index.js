@@ -162,6 +162,7 @@ export default function Algo() {
               <Grid item>
                 <Paper className={fixedHeightPaper}>
                   <CodeMirror
+                    autoCursor={false}
                     className={classes.fullCodeMirror}
                     value={codeMirrorValue}
                     options={options}
