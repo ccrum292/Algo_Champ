@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       codeText: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       correctAnswer: {
         type: Sequelize.BOOLEAN,

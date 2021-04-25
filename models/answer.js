@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Answer = sequelize.define('Answer', {
-    codeText: DataTypes.STRING,
+    codeText: DataTypes.TEXT,
     correctAnswer: {
       type: DataTypes.BOOLEAN,
       defaultValue: false

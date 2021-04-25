@@ -5,11 +5,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       defaultValue: "Description Here"
     },
     startingCode: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(1234),
       defaultValue: "// Hello World"
     },
     difficulty: {

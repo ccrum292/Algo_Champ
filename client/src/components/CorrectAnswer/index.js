@@ -68,6 +68,7 @@ export default function CorrectAnswer ({name, codeMirrorValue}) {
         </Grid>
         <Grid item>
           <CodeMirror
+            autoCursor={false}
             className={classes.fullCodeMirror}
             value={codeMirrorValue}
             options={options}

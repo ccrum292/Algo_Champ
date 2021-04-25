@@ -305,6 +305,7 @@ export default function NewAlgoForm ({ setModalOpen, setModalTitle, setExpanded,
         </Grid>
         <Grid item xs={12} sm={6}>
           <CodeMirror
+            autoCursor={false}
             className={classes.fullCodeMirror}
             value={starterCode}
             options={options}
@@ -327,6 +328,7 @@ export default function NewAlgoForm ({ setModalOpen, setModalTitle, setExpanded,
         </Grid>
         <Grid item xs={12} sm={6} md={5}>
           <CodeMirror
+              autoCursor={false}
               className={classes.smallCodeMirror}
               value={input}
               options={options}
@@ -337,6 +339,7 @@ export default function NewAlgoForm ({ setModalOpen, setModalTitle, setExpanded,
         </Grid>
         <Grid item xs={12} sm={6} md={5}>
           <CodeMirror
+              autoCursor={false}
               className={classes.smallCodeMirror}
               value={output}
               options={options}
